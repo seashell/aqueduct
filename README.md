@@ -1,12 +1,14 @@
 # WiFi Manager
 WiFi connection manager for embedded linux devices with a  browser-based configuration user interface built-in.
 
-## Goals
-- Easy to customizable User Interface  
-- Native container support
+# How it works
+...
 
 ## Roadmap
 - Basic project structure
 - Container wrapping
 - Basic tests
-- User interface 
+- Basic REST API
+- Basic user interface
+- Documentation
+- Advanced features (e.g more complex network configuration capabilities)
