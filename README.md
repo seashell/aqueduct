@@ -1,7 +1,7 @@
 # WiFi Manager
 WiFi connection manager for embedded linux devices with a  browser-based configuration user interface built-in.
 
-# How it works
+## How it works
 ...
 
 ## Roadmap
