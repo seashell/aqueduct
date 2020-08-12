@@ -9,9 +9,9 @@ RUN apk add make
 
 ENV GOPATH ""
 COPY . .
-RUN go build -o wiman ./cmd/main.go && cp wiman /bin/wiman
+RUN go build -o aqueduct ./cmd/main.go && cp aqueduct /bin/aqueduct
 
 FROM runner
-COPY --from=builder /bin/wiman /bin/wiman
+COPY --from=builder /bin/aqueduct /bin/aqueduct
 
-ENTRYPOINT ["wiman"]
+ENTRYPOINT ["aqueduct"]

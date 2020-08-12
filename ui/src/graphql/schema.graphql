@@ -1,0 +1,19 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  projects(limit: Int, offset: Int): [Project!]!
+  organizations(limit: Int, offset: Int): [Organization!]!
+}
+
+type Organization {
+  id: ID!
+  name: String!
+}
+
+type Project {
+  id: ID!
+  name: String!
+}

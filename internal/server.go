@@ -4,27 +4,27 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/seashell/wiman/internal/networkmanager"
-	"github.com/seashell/wiman/internal/dnsmasq"
+	"github.com/seashell/aqueduct/internal/dnsmasq"
+	"github.com/seashell/aqueduct/internal/networkmanager"
 )
 
 func Serve() {
 
 	nm, err := networkmanager.NewNetworkManager()
-	err = nil 
+	err = nil
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("==> Scanning access points ...")
-	ssids,err := nm.GetSSIDs()
+	ssids, err := nm.GetSSIDs()
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("==> Available access points:")
-	for _,ssid := range ssids {
-		fmt.Printf("\t%s\n",ssid)
+	for _, ssid := range ssids {
+		fmt.Printf("\t%s\n", ssid)
 	}
 
 	//TODO: bind dnsmasq execution to this program, so that if it closes/crashes, dnsmasq is stopped
@@ -34,7 +34,7 @@ func Serve() {
 		if err != nil {
 			panic(err)
 		}
-   }()
+	}()
 
 	fmt.Println("==> Starting new access point ...")
 	err = nm.StartAccessPoint()

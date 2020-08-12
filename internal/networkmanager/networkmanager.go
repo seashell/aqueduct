@@ -1,53 +1,53 @@
 package networkmanager
 
 import (
-	"net"
 	"encoding/binary"
+	"net"
 
 	"github.com/Wifx/gonetworkmanager"
 	"github.com/godbus/dbus/v5"
 )
 
 type NetworkManager struct {
-	networkManager	*gonetworkmanager.NetworkManager
+	networkManager *gonetworkmanager.NetworkManager
 	deviceWireless *gonetworkmanager.DeviceWireless
 }
 
 type ipv4Address struct {
 	address string
-	prefix uint32
+	prefix  uint32
 }
 
 const (
-	DBUS_SIGNAL_INTERFACE_MATCH	=	"org.freedesktop.DBus.Properties"
-	DBUS_SIGNAL_MATCH 				=	"PropertiesChanged"
-	DBUS_LASTSCAN_PROPERTY_NAME	=	"LastScan"
-	ACCESS_POINT_NAME					=	"wiman-ap"
-	ACCESS_POINT_PASSWORD			=	"admin123"
-	ACCESS_POINT_GATEWAY_ADDRESS	= 	"192.168.42.1"
+	DBUS_SIGNAL_INTERFACE_MATCH  = "org.freedesktop.DBus.Properties"
+	DBUS_SIGNAL_MATCH            = "PropertiesChanged"
+	DBUS_LASTSCAN_PROPERTY_NAME  = "LastScan"
+	ACCESS_POINT_NAME            = "aqueduct-ap"
+	ACCESS_POINT_PASSWORD        = "admin123"
+	ACCESS_POINT_GATEWAY_ADDRESS = "192.168.42.1"
 )
 
 // TODO: move
 func stringInSlice(a string, list []string) bool {
 	for _, b := range list {
-		 if b == a {
-			  return true
-		 }
+		if b == a {
+			return true
+		}
 	}
 	return false
 }
 
 // TODO: rename
-func inet_aton(ip string) (uint32) {
+func inet_aton(ip string) uint32 {
 	return binary.LittleEndian.Uint32(net.ParseIP(ip).To4())
 }
 
 // TODO: rename
-func waitLastScan(device gonetworkmanager.DeviceWireless, path dbus.ObjectPath) ([]string,error){
+func waitLastScan(device gonetworkmanager.DeviceWireless, path dbus.ObjectPath) ([]string, error) {
 
-	dconn,err := dbus.SystemBus()
+	dconn, err := dbus.SystemBus()
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	channel := make(chan *dbus.Signal, 1)
@@ -60,36 +60,36 @@ func waitLastScan(device gonetworkmanager.DeviceWireless, path dbus.ObjectPath) 
 	)
 
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	for sig := range channel {
 
 		propertiesChanged := sig.Body[1].(map[string]dbus.Variant)
-		
-		for propName,_ := range propertiesChanged {
+
+		for propName, _ := range propertiesChanged {
 			if propName == DBUS_LASTSCAN_PROPERTY_NAME {
 				accessPointsRaw, err := device.GetAccessPoints()
 				if err != nil {
-					return nil,err
+					return nil, err
 				}
 
 				ssids := []string{}
 				for _, accessPoint := range accessPointsRaw {
 					ssid, err := accessPoint.GetPropertySSID()
 					if err != nil {
-						return nil,err
+						return nil, err
 					}
-					
-					if !stringInSlice(ssid,ssids) {
-						ssids = append(ssids,ssid)
+
+					if !stringInSlice(ssid, ssids) {
+						ssids = append(ssids, ssid)
 					}
 				}
-				return ssids,nil			
+				return ssids, nil
 			}
 		}
 	}
-	return nil,err
+	return nil, err
 }
 
 // NewNetworkManager :
@@ -106,7 +106,7 @@ func NewNetworkManager() (*NetworkManager, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	/* Get first wireless device */
 	for _, device := range devices {
 
@@ -115,7 +115,7 @@ func NewNetworkManager() (*NetworkManager, error) {
 			return nil, err
 		}
 
-		if (deviceType == gonetworkmanager.NmDeviceTypeWifi) {
+		if deviceType == gonetworkmanager.NmDeviceTypeWifi {
 			dw, err := gonetworkmanager.NewDeviceWireless(device.GetPath())
 			if err != nil {
 				return nil, err
@@ -132,22 +132,22 @@ func NewNetworkManager() (*NetworkManager, error) {
 
 // GetSSIDs :
 func (n *NetworkManager) GetSSIDs() ([]string, error) {
-		err := (*n.deviceWireless).RequestScan()
-		if err != nil {
-			return nil, err
-		}
+	err := (*n.deviceWireless).RequestScan()
+	if err != nil {
+		return nil, err
+	}
 
-		return waitLastScan(*n.deviceWireless, (*n.deviceWireless).GetPath())
+	return waitLastScan(*n.deviceWireless, (*n.deviceWireless).GetPath())
 }
 
 // StartAccessPoint :
-func (n *NetworkManager) StartAccessPoint() (error) {
+func (n *NetworkManager) StartAccessPoint() error {
 
 	conn := gonetworkmanager.ConnectionSettings{}
-			
+
 	conn["connection"] = make(map[string]interface{})
 	conn["connection"]["id"] = ACCESS_POINT_NAME
-	conn["connection"]["type"] = "802-11-wireless"	
+	conn["connection"]["type"] = "802-11-wireless"
 	conn["connection"]["autoconnect"] = false
 
 	conn["802-11-wireless"] = make(map[string]interface{})
@@ -158,10 +158,10 @@ func (n *NetworkManager) StartAccessPoint() (error) {
 	conn["802-11-wireless-security"] = make(map[string]interface{})
 	conn["802-11-wireless-security"]["key-mgmt"] = "wpa-psk"
 	conn["802-11-wireless-security"]["psk"] = ACCESS_POINT_PASSWORD
- 
-	addressData := []uint32{inet_aton(ACCESS_POINT_GATEWAY_ADDRESS),uint32(24),inet_aton(ACCESS_POINT_GATEWAY_ADDRESS)}
+
+	addressData := []uint32{inet_aton(ACCESS_POINT_GATEWAY_ADDRESS), uint32(24), inet_aton(ACCESS_POINT_GATEWAY_ADDRESS)}
 	addresses := [][]uint32{addressData}
-	
+
 	conn["ipv4"] = make(map[string]interface{})
 	conn["ipv4"]["addresses"] = addresses
 	conn["ipv4"]["method"] = "manual"
@@ -171,7 +171,7 @@ func (n *NetworkManager) StartAccessPoint() (error) {
 
 	conn["proxy"] = make(map[string]interface{})
 
-	_,err := (*n.networkManager).AddAndActivateConnection(conn, (*n.deviceWireless))
+	_, err := (*n.networkManager).AddAndActivateConnection(conn, (*n.deviceWireless))
 	if err != nil {
 		return err
 	}
@@ -179,7 +179,7 @@ func (n *NetworkManager) StartAccessPoint() (error) {
 }
 
 // StoptAccessPoint :
-func (n *NetworkManager) StoptAccessPoint() (error) {
+func (n *NetworkManager) StoptAccessPoint() error {
 	activeConn, err := (*n.deviceWireless).GetPropertyActiveConnection()
 	if err != nil {
 		return err
@@ -194,11 +194,11 @@ func (n *NetworkManager) StoptAccessPoint() (error) {
 	if err != nil {
 		return err
 	}
-	
+
 	err = conn.Delete()
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }
