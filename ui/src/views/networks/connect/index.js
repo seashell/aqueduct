@@ -91,7 +91,7 @@ const ConnectionSetupView = ({ ssid }) => {
             <Button variant="primary" mt={4} mb={3} onClick={handleSaveButtonClick} width="120px">
               Save
             </Button>
-            <Link to="/networks">Cancel</Link>
+            <Link to="/ui/networks">Cancel</Link>
           </Box>
         </form>
       </Box>

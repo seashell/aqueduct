@@ -127,10 +127,10 @@ const Header = props => {
 
   const navItems = (
     <>
-      <Nav to="/networks">Connect</Nav>
-      <Nav to="/provisioning">Provision</Nav>
-      <Nav to="/actions">Command</Nav>
-      <Nav to="/system">System</Nav>
+      <Nav to="/ui/networks">Connect</Nav>
+      <Nav to="/ui/provisioning">Provision</Nav>
+      <Nav to="/ui/actions">Command</Nav>
+      <Nav to="/ui/system">System</Nav>
     </>
   )
 

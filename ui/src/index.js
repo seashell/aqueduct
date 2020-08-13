@@ -34,8 +34,7 @@ const Root = () => {
         <ModalProvider backgroundComponent={ModalBackground}>
           <GlobalStyles />
           <Router>
-            <App path="/*" />
-            <NotFound default />
+            <App path="/ui/*" />
           </Router>
           <ToastContainer />
         </ModalProvider>

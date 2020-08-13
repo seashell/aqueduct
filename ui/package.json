@@ -1,6 +1,7 @@
 {
   "name": "aqueduct-ui",
   "version": "0.1.0",
+  "homepage": "/ui/",
   "private": true,
   "scripts": {
     "start": "react-app-rewired start",
