@@ -44,12 +44,11 @@ export const CustomApolloProvider = ({ children }) => {
   })
 
   const authLink = new ApolloLink((operation, forward) => {
-    const { token, orgId } = operation.getContext()
+    const { token } = operation.getContext()
     operation.setContext(({ headers }) => ({
       headers: {
         ...headers,
         Authorization: `Bearer ${token}`,
-        'Organization-ID': orgId,
       },
     }))
     return forward(operation)

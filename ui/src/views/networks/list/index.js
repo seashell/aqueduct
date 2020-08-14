@@ -36,20 +36,16 @@ const NetworksView = () => {
     window.scrollTo(0, 0)
   })
 
-  const isError = false && getNetworksQuery.error
   const isLoading = getNetworksQuery.loading
-  const isEmpty = getNetworksQuery.data ? getNetworksQuery.data.result.count === 0 : true
 
-  const networks = getNetworksQuery.data
-    ? getNetworksQuery.data.result.items
-    : [
-        { ssid: 'netw1', rssi: 26, security: 'WEP', configured: false },
-        { ssid: 'netw2', rssi: 98, security: '', configured: true },
-        { ssid: 'netw3', rssi: 34, security: 'WEP', configured: false },
-        { ssid: 'netw4', rssi: 67, security: '', configured: true },
-      ]
+  if (isLoading) {
+    return <Spinner />
+  }
 
-  const filteredNetworks = isLoading ? [] : networks.filter(el => el.ssid.includes(searchString))
+  const networks = getNetworksQuery.data ? getNetworksQuery.data.result.items : []
+
+  const filteredNetworks =
+    isLoading || networks === null ? [] : networks.filter(el => el.ssid.includes(searchString))
 
   return (
     <Container>
@@ -70,7 +66,7 @@ const NetworksView = () => {
             ssid={el.ssid}
             rssi={el.rssi}
             security={el.security}
-            configured={el.configured}
+            configured={el.isConfigured}
             onClick={ssid => {
               navigate(`networks/${ssid}/connect`)
             }}

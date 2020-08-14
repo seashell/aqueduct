@@ -7,16 +7,16 @@ import (
 	http "github.com/seashell/aqueduct/aqueduct/infrastructure/http"
 )
 
-type FilesystemHandlerAdapter struct {
+type SPAHandlerAdapter struct {
 	http.BaseHandlerAdapter
 	fsHandler http.HandlerAdapter
 }
 
 // NewFilesystemHandlerAdapter creates a new handler adapter for delivering
 // static files from a filesystem over HTTP
-func NewFilesystemHandlerAdapter(fs stdhttp.FileSystem) http.HandlerAdapter {
+func NewSPAHandlerAdapter(fs stdhttp.FileSystem) http.HandlerAdapter {
 
-	a := &FilesystemHandlerAdapter{
+	a := &SPAHandlerAdapter{
 		fsHandler: stdhttp.FileServer(fs),
 	}
 
@@ -25,7 +25,8 @@ func NewFilesystemHandlerAdapter(fs stdhttp.FileSystem) http.HandlerAdapter {
 	return a
 }
 
-func (a *FilesystemHandlerAdapter) spa(resp http.Response, req *http.Request) (interface{}, error) {
+func (a *SPAHandlerAdapter) spa(resp http.Response, req *http.Request) (interface{}, error) {
+
 	if req.URL.Path != "/" && !strings.HasPrefix(req.URL.Path, "/static") {
 		req.URL.Path = "/"
 	}

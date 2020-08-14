@@ -4,15 +4,17 @@ import { Router } from '@reach/router'
 import styled, { ThemeProvider } from 'styled-components'
 import log from 'loglevel'
 
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+
 import ApolloProvider from '_graphql/apollo-provider'
 import { ModalProvider, BaseModalBackground } from 'styled-react-modal'
 import { ToastContainer } from '_components/toast'
 
 import App from '_views/app'
-import NotFound from '_views/not-found'
 
-import * as serviceWorker from './serviceWorker'
 import { themes, GlobalStyles } from './styles'
+import * as serviceWorker from './serviceWorker'
 
 import { REST_API_URL } from './environment'
 
@@ -30,15 +32,17 @@ const Root = () => {
 
   return (
     <ApolloProvider>
-      <ThemeProvider theme={themes[theme]}>
-        <ModalProvider backgroundComponent={ModalBackground}>
-          <GlobalStyles />
-          <Router>
-            <App path="/ui/*" />
-          </Router>
-          <ToastContainer />
-        </ModalProvider>
-      </ThemeProvider>
+      <DndProvider backend={HTML5Backend}>
+        <ThemeProvider theme={themes[theme]}>
+          <ModalProvider backgroundComponent={ModalBackground}>
+            <GlobalStyles />
+            <Router>
+              <App path="/ui/*" />
+            </Router>
+            <ToastContainer />
+          </ModalProvider>
+        </ThemeProvider>
+      </DndProvider>
     </ApolloProvider>
   )
 }

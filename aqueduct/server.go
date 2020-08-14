@@ -3,15 +3,17 @@ package aqueduct
 import (
 	"context"
 	"fmt"
+	"os"
 	"sync"
 	"time"
 
+	application "github.com/seashell/aqueduct/aqueduct/application"
 	http "github.com/seashell/aqueduct/aqueduct/infrastructure/http"
 	handler "github.com/seashell/aqueduct/aqueduct/infrastructure/http/handler"
 	dnsmasq "github.com/seashell/aqueduct/pkg/dnsmasq"
 	log "github.com/seashell/aqueduct/pkg/log"
 	logrus "github.com/seashell/aqueduct/pkg/log/logrus"
-	networkmanager "github.com/seashell/aqueduct/pkg/networkmanager"
+	"github.com/seashell/aqueduct/pkg/networkmanager"
 	ui "github.com/seashell/aqueduct/ui"
 )
 
@@ -24,7 +26,10 @@ type Server struct {
 
 	httpServer *http.Server
 
-	services struct{}
+	services struct {
+		networks application.NetworkService
+		system   application.SystemService
+	}
 
 	shutdownCtx    context.Context
 	shutdownCancel context.CancelFunc
@@ -52,9 +57,12 @@ func NewServer(config *Config) (*Server, error) {
 	s.shutdownCtx, s.shutdownCancel = context.WithCancel(context.Background())
 	s.shutdownCh = s.shutdownCtx.Done()
 
-	//s.services.tokens = application.NewTokenService(tokenRepository)
-	//s.services.networks = application.NewNetworkService(networkRepository)
-	//s.services.hosts = application.NewHostService(hostRepository)
+	if _, err := os.Stat(s.config.DataDir); os.IsNotExist(err) {
+		os.Mkdir(s.config.DataDir, 0755)
+	}
+
+	s.services.networks = application.NewNetworkService()
+	s.services.system = application.NewSystemService()
 
 	// Setup HTTP server
 	if err := s.setupHTTPServer(); err != nil {
@@ -65,16 +73,20 @@ func NewServer(config *Config) (*Server, error) {
 }
 
 func (s *Server) setupHTTPServer() error {
+
 	config := &http.ServerConfig{
 		Logger:      s.logger,
 		BindAddress: fmt.Sprintf("%s:%d", s.config.BindAddr, s.config.Ports.HTTP),
 		Handlers: map[string]http.HandlerAdapter{
 			"/api/healthcheck/": handler.NewHealthcheckHandlerAdapter(s.logger),
+			"/api/filesystem/":  handler.NewFileSystemHandlerAdapter(s.config.DataDir, s.logger),
+			"/api/networks/":    handler.NewNetworkHandlerAdapter(s.services.networks, s.logger),
+			"/api/system/":      handler.NewSystemHandlerAdapter(s.services.system, s.logger),
 		},
 	}
 
 	if s.config.UI {
-		config.Handlers["/ui/"] = handler.NewFilesystemHandlerAdapter(ui.Bundle)
+		config.Handlers["/ui/"] = handler.NewSPAHandlerAdapter(ui.Bundle)
 		config.Handlers["/"] = handler.NewFallthroughHandlerAdapter("/ui/")
 	}
 
@@ -99,17 +111,6 @@ func Serve() {
 		panic(err)
 	}
 
-	fmt.Println("==> Scanning access points ...")
-	ssids, err := nm.GetSSIDs()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("==> Available access points:")
-	for _, ssid := range ssids {
-		fmt.Printf("\t%s\n", ssid)
-	}
-
 	//TODO: bind dnsmasq execution to this program, so that if it closes/crashes, dnsmasq is stopped
 	go func() {
 		fmt.Println("==> Starting dnsmasq ...")
@@ -129,7 +130,7 @@ func Serve() {
 	time.Sleep(600 * time.Second)
 
 	fmt.Println("==> Stopping access point ...")
-	err = nm.StoptAccessPoint()
+	err = nm.StopAccessPoint()
 	if err != nil {
 		panic(err)
 	}

@@ -136,7 +136,6 @@ func (n *NetworkManager) GetSSIDs() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return waitLastScan(*n.deviceWireless, (*n.deviceWireless).GetPath())
 }
 
@@ -179,7 +178,7 @@ func (n *NetworkManager) StartAccessPoint() error {
 }
 
 // StoptAccessPoint :
-func (n *NetworkManager) StoptAccessPoint() error {
+func (n *NetworkManager) StopAccessPoint() error {
 	activeConn, err := (*n.deviceWireless).GetPropertyActiveConnection()
 	if err != nil {
 		return err
