@@ -7,7 +7,7 @@ import Box from '_components/box'
 import Text from '_components/text'
 import Avatar from '_components/avatar'
 import Button from '_components/button'
-import { Jellyfish as Spinner } from '_components/spinner'
+import { Bars as Spinner } from '_components/spinner'
 
 const Overview = () => {
   const { user, loading: isLoading } = useAuth0()

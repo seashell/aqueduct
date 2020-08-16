@@ -3,7 +3,6 @@ import { grid, colorStyle, color, space, layout } from 'styled-system'
 
 import Link from '_components/link'
 import Collapse from '_components/collapse'
-import Separator from '_components/separator'
 
 export const Container = styled.div`
 ${grid}
@@ -12,7 +11,7 @@ ${layout}
 ${colorStyle}
 
 position: fixed;
-width: 200px;
+width: 260px;
 
 display: flex;
 flex-direction: column;
@@ -22,23 +21,27 @@ top:0;
 left:0;
 bottom:0;
 
-background: ${props => props.theme.colors.primaryDarker};
+border-right: 1px solid ${props => props.theme.colors.neutralLight};
+background: transparent;
 
 z-index: 9;
+
+display: none;
+
+// Laptops and above
+@media (min-width: 1280px) {
+  display: flex;
+}
+
 `
 
-export const StyledSeparator = styled(Separator).attrs({
-  bg: 'neutralDarkest',
-  my: 3,
-})``
-
-export const NavLink = styled(Link).attrs(() => ({
+export const NavLink = styled(Link).attrs(props => ({
   px: 3,
   py: 2,
   getProps: ({ isPartiallyCurrent }) => ({
     style: {
-      fontWeight: isPartiallyCurrent ? '600' : '400',
-      background: isPartiallyCurrent && 'rgba(255,255,255,0.1)',
+      borderRight: isPartiallyCurrent ? '3px solid' : 'none',
+      borderColor: isPartiallyCurrent ? props.theme.colors.primary : '',
     },
   }),
 }))`
@@ -53,9 +56,10 @@ export const NavLink = styled(Link).attrs(() => ({
     align-items: center;
 
   font-size: 16px;  
-  color: ${({ theme }) => theme.colors.neutralLighter};
+  color: ${({ theme }) => theme.colors.neutral};
   :hover {
-    background: rgba(0,0,0,0.2);
+    border-right: 3px solid!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
   };
   ${color}
   ${space}

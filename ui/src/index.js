@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Router } from '@reach/router'
+import { Router, Redirect } from '@reach/router'
 import styled, { ThemeProvider } from 'styled-components'
 import log from 'loglevel'
 
@@ -38,6 +38,7 @@ const Root = () => {
             <GlobalStyles />
             <Router>
               <App path="/ui/*" />
+              <Redirect noThrow from="/" to="/ui/" />
             </Router>
             <ToastContainer />
           </ModalProvider>

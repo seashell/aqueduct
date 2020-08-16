@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 import Box from '_components/box'
+import { color } from 'styled-system'
 
 const Container = styled(Box)`
   width: 30px;
@@ -11,11 +12,12 @@ const Container = styled(Box)`
     width: 100%;
     height: 100%;
   }
+  ${color}
 `
 
 const BarsIndicator = ({ value, colorFilled, colorEmpty, ...props }) => {
   const filledBars = Math.floor(value / 20)
-
+  console.log(props)
   return (
     <Container {...props}>
       <svg width="134.55mm" height="115.69mm" version="1.1" viewBox="0 0 134.55 115.69">

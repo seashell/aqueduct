@@ -9,10 +9,10 @@ import ActionsRouter from '_views/actions'
 import ProvisioningRouter from '_views/provision'
 import SystemRouter from '_views/system'
 
-import { Jellyfish as Spinner } from '_components/spinner'
+import { Bars as Spinner } from '_components/spinner'
 
 import Header from '_containers/header'
-import Footer from '_containers/footer'
+import SideNav from '_containers/side-nav'
 
 import ConfirmationDialogProvider from '_components/confirmation-dialog'
 import DownloadProvider from '_utils/download-provider'
@@ -21,11 +21,19 @@ const Dashboard = styled.div`
   position: relative;
   display: grid;
   height: 100vh;
-  grid-template: 72px auto 40px / 0px auto;
+
+  grid-template: 72px auto / auto;
   grid-template-areas:
-    'sidenav header'
-    'sidenav body'
-    'sidenav footer';
+    'header'
+    'body';
+
+  // Laptops and above
+  @media (min-width: 1280px) {
+    grid-template: 72px auto / 260px auto;
+    grid-template-areas:
+      'header header'
+      'sidenav body';
+  }
 `
 
 const Content = styled(Router).attrs({ primary: false })`
@@ -52,6 +60,7 @@ const App = () => {
       <DownloadProvider>
         <Dashboard>
           <Header />
+          <SideNav />
           <Content>
             <HomeView path="/" />
             <NetworksRouter path="/networks/*" />
@@ -60,7 +69,6 @@ const App = () => {
             <ProvisioningRouter path="/provisioning/*" />
             <NotFound default />
           </Content>
-          <Footer gridArea="footer" />
         </Dashboard>
       </DownloadProvider>
     </ConfirmationDialogProvider>

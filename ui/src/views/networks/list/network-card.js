@@ -48,7 +48,7 @@ const NetworkCard = ({ ssid, rssi, security, configured, onClick, onForget }) =>
   return (
     <Container onClick={handleCardClick}>
       <Box alignItems="center" width="100%">
-        <SignalStrengthIndicator value={rssi} colorFilled="#00a1ff" />
+        <SignalStrengthIndicator value={rssi} colorFilled="#00e092" />
         <Box ml={3}>
           <Text textStyle="body" fontSize="16px">
             {ssid}

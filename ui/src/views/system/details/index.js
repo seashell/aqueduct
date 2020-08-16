@@ -8,10 +8,19 @@ import { GET_INFO } from '_graphql/actions/system'
 import Box from '_components/box'
 import Text from '_components/text'
 
-import { Jellyfish as Spinner } from '_components/spinner'
+import { Bars as Spinner } from '_components/spinner'
 
 const Container = styled(Box)`
   flex-direction: column;
+`
+
+const InfoTable = styled(Box)`
+  flex-direction: column;
+`
+
+const InfoRow = styled(Box)`
+  padding: 16px 8px;
+  height: 48px;
 `
 
 const SystemDetailsView = () => {
@@ -38,10 +47,20 @@ const SystemDetailsView = () => {
       <Box mb={3}>
         <Text textStyle="title">System</Text>
       </Box>
-      <Box flexDirection="column">
-        <Text textStyle="body">OS: {info.os}</Text>
-        <Text textStyle="body">Aqueduct: {info.aqueduct}</Text>
-      </Box>
+      <InfoTable>
+        <InfoRow>
+          <Text textStyle="strong">OS</Text>
+          <Text textStyle="body" ml="auto">
+            {info.os}
+          </Text>
+        </InfoRow>
+        <InfoRow>
+          <Text textStyle="strong">Aqueduct</Text>
+          <Text textStyle="body" ml="auto">
+            {info.aqueduct}
+          </Text>
+        </InfoRow>
+      </InfoTable>
     </Container>
   )
 }

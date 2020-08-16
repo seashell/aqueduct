@@ -20,7 +20,7 @@ func NewSystemService() SystemService {
 
 func (s *systemService) GetInfo() (*structs.SystemInfoOutput, error) {
 
-	out, err := exec.Command("uname", "-a").Output()
+	out, err := exec.Command("uname", "-s", "-r").Output()
 	if err != nil {
 		return nil, err
 	}

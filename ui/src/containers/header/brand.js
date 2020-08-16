@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { colorStyle, layout, size } from 'styled-system'
+import { colorStyle } from 'styled-system'
 
 import { Link } from '@reach/router'
 

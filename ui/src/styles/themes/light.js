@@ -5,9 +5,9 @@ const colors = {
 
   primaryDarker: '#00022e',
   primaryDark: '#120078',
-  primary: '#00a1ff',
-  primaryLight: 'b6d4ff',
-  primaryLighter: 'b6d4ff',
+  primary: '#00e092',
+  primaryLight: '#b6d4ff',
+  primaryLighter: '#b6d4ff',
   primaryLightest: '#f4f5f9',
 
   secondary: '#00000',
@@ -77,6 +77,7 @@ export default {
     primary: { background: colors.primary, color: colors.white },
     secondary: { background: colors.secondary, color: colors.white },
     neutral: { background: colors.neutralLighter, color: colors.neutralDark },
+    discrete: { background: 'none', color: colors.neutralDark },
     warning: { background: colors.transparent, color: colors.warning, border: borders.thin },
     danger: { background: colors.danger, color: colors.white },
     primaryInverted: {

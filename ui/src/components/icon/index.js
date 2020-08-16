@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
-import { color, border } from 'styled-system'
+import { color, border, layout } from 'styled-system'
 
 import Box from '_components/box'
 
@@ -31,6 +31,7 @@ export const Container = styled(Box)`
         }
       `}
   }
+  ${layout}
   ${border}
   ${color}
 `

@@ -12,7 +12,7 @@ import Button from '_components/button'
 import SearchInput from '_components/inputs/search-input'
 import ErrorState from '_components/error-state'
 import EmptyState from '_components/empty-state'
-import { Jellyfish as Spinner } from '_components/spinner'
+import { Bars as Spinner } from '_components/spinner'
 import { useConfirmationDialog } from '_components/confirmation-dialog'
 
 import NetworkCard from './network-card'
@@ -68,7 +68,7 @@ const NetworksView = () => {
             security={el.security}
             configured={el.isConfigured}
             onClick={ssid => {
-              navigate(`networks/${ssid}/connect`)
+              navigate(`/ui/networks/${ssid}/connect`)
             }}
             onForget={() => {}}
           />

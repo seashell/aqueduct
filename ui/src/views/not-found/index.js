@@ -30,11 +30,11 @@ const NotFound = () => {
     <Container>
       <StyledBox>
         <illustrations.NotFound />
-        <Text textStyle="subtitle" mt={4}>
+        <Text textStyle="subtitle" mt={3}>
           Page not found
         </Text>
         <Text textStyle="description" my={3}>
-          {`Oops! It seems that the page you're trying to access does not exist or has been moved.`}
+          {`The page you're trying to access does not exist or has been moved.`}
         </Text>
       </StyledBox>
     </Container>

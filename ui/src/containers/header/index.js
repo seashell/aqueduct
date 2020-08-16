@@ -11,6 +11,7 @@ import Button from '_components/button'
 import Box from '_components/box'
 import Link from '_components/link'
 import IconButton from '_components/icon-button'
+import nav from '_containers/nav'
 
 import Brand from './brand'
 
@@ -125,22 +126,11 @@ const Header = props => {
 
   useHotkeys('ctrl+b', () => searchInputRef.current.focus())
 
-  const navItems = (
-    <>
-      <Nav to="/ui/networks">Connect</Nav>
-      <Nav to="/ui/provisioning">Provision</Nav>
-      <Nav to="/ui/actions">Command</Nav>
-      <Nav to="/ui/system">System</Nav>
-    </>
-  )
-
   return (
     <Container {...props}>
       <Box gridArea="brand">
         <Brand />
-        <NavItems gridArea="nav" className="nav-default" ml={3}>
-          {navItems}
-        </NavItems>
+        <NavItems gridArea="nav" className="nav-default" ml={3} />
       </Box>
       <NavItems gridArea="nav" className="nav-mobile">
         <IconButton
@@ -152,7 +142,7 @@ const Header = props => {
       </NavItems>
       <NavItems gridArea="nav" className="nav-default">
         <a href="https://www.github.com/seashell/aqueduct/issues">
-          <Icon ml="auto" icon={<icons.Buoy />} color="neutralDark" />
+          <Icon ml="auto" icon={<icons.Buoy />} color="neutral" />
         </a>
       </NavItems>
 
@@ -174,7 +164,9 @@ const Header = props => {
             </Button>
           </Box>
           <Box flexDirection="column" mt={3}>
-            {navItems}
+            {nav.options.map(el => (
+              <Nav to={el.to}>{el.title}</Nav>
+            ))}
           </Box>
           <Box bg="#f7f7f9" alignItems="center" p="16px" />
         </MobileMenu>

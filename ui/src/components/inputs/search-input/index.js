@@ -29,7 +29,7 @@ const StyledInput = styled.input`
   box-sizing: border-box;
   padding-left: 32px;
   border: 1px solid ${props => props.theme.colors.neutralLighter};
-  border-radius: 2px;
+  border-radius: 40px;
   font-size: 14px;
   width: 100%;
   height: 100%;
