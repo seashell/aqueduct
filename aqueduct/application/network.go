@@ -8,32 +8,41 @@ type NetworkService interface {
 	FindAll(in *structs.ListNetworksInput) (*structs.ListNetworksOutput, error)
 }
 
+type AccessPoint interface {
+	SSID() string
+	RSSI() int
+	Security() string
+	IsConfigured() bool
+}
+
 type NetworkManager interface {
-	ListNetworks() ([]string, error)
-	DeleteNetwork(ssid string) error
-	PutNetwork() error
+	ListAccessPoints() ([]AccessPoint, error)
 }
 
 type networkService struct {
+	nm NetworkManager
 }
 
-func NewNetworkService() NetworkService {
-	return &networkService{}
+func NewNetworkService(nm NetworkManager) NetworkService {
+	return &networkService{nm}
 }
 
 func (s *networkService) FindAll(in *structs.ListNetworksInput) (*structs.ListNetworksOutput, error) {
 
-	// Inject NetworkManager impl into this service and use it here
+	aps, err := s.nm.ListAccessPoints()
+	if err != nil {
+		return nil, err
+	}
 
-	mockData := []*structs.GetNetworkOutput{
-		{SSID: stringToPtr("a-network"), RSSI: intToPtr(67), Security: stringToPtr("WPA/PSK"), IsConfigured: boolToPtr(false)},
-		{SSID: stringToPtr("b-network"), RSSI: intToPtr(12), Security: stringToPtr("WPA/PSK"), IsConfigured: boolToPtr(true)},
-		{SSID: stringToPtr("c-network"), RSSI: intToPtr(32), Security: stringToPtr("WEP"), IsConfigured: boolToPtr(true)},
-		{SSID: stringToPtr("d-network"), RSSI: intToPtr(67), Security: stringToPtr("WPA/PSK"), IsConfigured: boolToPtr(false)},
+	nets := []*structs.GetNetworkOutput{}
+	for _, ap := range aps {
+		nets = append(nets, &structs.GetNetworkOutput{
+			SSID: stringToPtr(ap.SSID()),
+		})
 	}
 
 	return &structs.ListNetworksOutput{
-		Items: mockData,
+		Items: nets,
 	}, nil
 }
 

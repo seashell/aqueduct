@@ -5,15 +5,13 @@ import (
 	"fmt"
 	"os"
 	"sync"
-	"time"
 
 	application "github.com/seashell/aqueduct/aqueduct/application"
 	http "github.com/seashell/aqueduct/aqueduct/infrastructure/http"
 	handler "github.com/seashell/aqueduct/aqueduct/infrastructure/http/handler"
-	dnsmasq "github.com/seashell/aqueduct/pkg/dnsmasq"
+	networkmanager "github.com/seashell/aqueduct/aqueduct/infrastructure/networkmanager"
 	log "github.com/seashell/aqueduct/pkg/log"
 	logrus "github.com/seashell/aqueduct/pkg/log/logrus"
-	"github.com/seashell/aqueduct/pkg/networkmanager"
 	ui "github.com/seashell/aqueduct/ui"
 )
 
@@ -61,7 +59,12 @@ func NewServer(config *Config) (*Server, error) {
 		os.Mkdir(s.config.DataDir, 0755)
 	}
 
-	s.services.networks = application.NewNetworkService()
+	nm, err := networkmanager.NewNetworkManager()
+	if err != nil {
+		return nil, err
+	}
+
+	s.services.networks = application.NewNetworkService(nm)
 	s.services.system = application.NewSystemService()
 
 	// Setup HTTP server
@@ -100,39 +103,4 @@ func (s *Server) setupHTTPServer() error {
 	s.httpServer.Run()
 
 	return nil
-}
-
-// TODO: move this into an application service
-func Serve() {
-
-	nm, err := networkmanager.NewNetworkManager()
-	err = nil
-	if err != nil {
-		panic(err)
-	}
-
-	//TODO: bind dnsmasq execution to this program, so that if it closes/crashes, dnsmasq is stopped
-	go func() {
-		fmt.Println("==> Starting dnsmasq ...")
-		err = dnsmasq.StartDnsmasq()
-		if err != nil {
-			panic(err)
-		}
-	}()
-
-	fmt.Println("==> Starting new access point ...")
-	err = nm.StartAccessPoint()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("==> Waiting 600 seconds ...")
-	time.Sleep(600 * time.Second)
-
-	fmt.Println("==> Stopping access point ...")
-	err = nm.StopAccessPoint()
-	if err != nil {
-		panic(err)
-	}
-
 }

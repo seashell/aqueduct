@@ -89,6 +89,7 @@ func (a *BaseHandlerAdapter) RegisterHandlerFunc(method string, path string, han
 
 		rw.Header().Set("Content-Type", "application/json")
 		rw.Write(encoded)
+
 	}
 
 	a.Handle(method, path, f)

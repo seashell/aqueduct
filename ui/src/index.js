@@ -4,9 +4,6 @@ import { Router, Redirect } from '@reach/router'
 import styled, { ThemeProvider } from 'styled-components'
 import log from 'loglevel'
 
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-
 import ApolloProvider from '_graphql/apollo-provider'
 import { ModalProvider, BaseModalBackground } from 'styled-react-modal'
 import { ToastContainer } from '_components/toast'
@@ -32,18 +29,16 @@ const Root = () => {
 
   return (
     <ApolloProvider>
-      <DndProvider backend={HTML5Backend}>
-        <ThemeProvider theme={themes[theme]}>
-          <ModalProvider backgroundComponent={ModalBackground}>
-            <GlobalStyles />
-            <Router>
-              <App path="/ui/*" />
-              <Redirect noThrow from="/" to="/ui/" />
-            </Router>
-            <ToastContainer />
-          </ModalProvider>
-        </ThemeProvider>
-      </DndProvider>
+      <ThemeProvider theme={themes[theme]}>
+        <ModalProvider backgroundComponent={ModalBackground}>
+          <GlobalStyles />
+          <Router>
+            <App path="/ui/*" />
+            <Redirect noThrow from="/" to="/ui/" />
+          </Router>
+          <ToastContainer />
+        </ModalProvider>
+      </ThemeProvider>
     </ApolloProvider>
   )
 }
