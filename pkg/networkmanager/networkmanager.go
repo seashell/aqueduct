@@ -15,6 +15,11 @@ type NetworkManager struct {
 	deviceWireless *gonetworkmanager.DeviceWireless
 }
 
+type AccessPoint struct {
+	SSID string
+	RSSI int
+}
+
 type ipv4Address struct {
 	address string
 	prefix  uint32
@@ -45,7 +50,7 @@ func inet_aton(ip string) uint32 {
 }
 
 // TODO: rename
-func waitLastScan(device gonetworkmanager.DeviceWireless, path dbus.ObjectPath, timeout int) ([]string, error) {
+func waitLastScan(device gonetworkmanager.DeviceWireless, path dbus.ObjectPath, timeout int) ([]*AccessPoint, error) {
 
 	if timeout == 0 {
 		timeout = defaultTimeout
@@ -85,15 +90,21 @@ func waitLastScan(device gonetworkmanager.DeviceWireless, path dbus.ObjectPath, 
 						return nil, err
 					}
 
-					ssids := []string{}
+					accessPoints := []*AccessPoint{}
 					for _, ap := range aps {
 						ssid, err := ap.GetPropertySSID()
 						if err != nil {
 							return nil, err
 						}
-						ssids = append(ssids, ssid)
+
+						rssi, err := ap.GetPropertyStrength()
+						if err != nil {
+							return nil, err
+						}
+
+						accessPoints = append(accessPoints, &AccessPoint{SSID: ssid, RSSI: int(rssi)})
 					}
-					return ssids, nil
+					return accessPoints, nil
 				}
 			}
 		}
@@ -136,7 +147,7 @@ func NewNetworkManager() (*NetworkManager, error) {
 }
 
 // GetAccessPoints :
-func (n *NetworkManager) GetAccessPoints() ([]string, error) {
+func (n *NetworkManager) GetAccessPoints() ([]*AccessPoint, error) {
 	err := (*n.deviceWireless).RequestScan()
 	if err != nil {
 		return nil, err

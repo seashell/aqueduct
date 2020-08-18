@@ -2,6 +2,7 @@ package networkmanager
 
 type AccessPoint struct {
 	ssid string
+	rssi int
 }
 
 func (ap *AccessPoint) SSID() string {
@@ -9,7 +10,7 @@ func (ap *AccessPoint) SSID() string {
 }
 
 func (ap *AccessPoint) RSSI() int {
-	return 100
+	return ap.rssi
 }
 
 func (ap *AccessPoint) Security() string {

@@ -38,6 +38,7 @@ func (s *networkService) FindAll(in *structs.ListNetworksInput) (*structs.ListNe
 	for _, ap := range aps {
 		nets = append(nets, &structs.GetNetworkOutput{
 			SSID: stringToPtr(ap.SSID()),
+			RSSI: intToPtr(ap.RSSI()),
 		})
 	}
 

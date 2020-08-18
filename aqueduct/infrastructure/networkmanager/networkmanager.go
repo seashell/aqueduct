@@ -24,15 +24,15 @@ func NewNetworkManager() (*NetworkManager, error) {
 // ListAccessPoints
 func (c *NetworkManager) ListAccessPoints() ([]application.AccessPoint, error) {
 
-	ssids, err := c.conn.GetSSIDs()
+	aps, err := c.conn.GetAccessPoints()
 	if err != nil {
 		return nil, err
 	}
 
-	aps := []application.AccessPoint{}
-	for _, ssid := range ssids {
-		aps = append(aps, &AccessPoint{ssid: ssid})
+	items := []application.AccessPoint{}
+	for _, ap := range aps {
+		items = append(items, &AccessPoint{ssid: ap.SSID, rssi: ap.RSSI})
 	}
 
-	return aps, nil
+	return items, nil
 }
