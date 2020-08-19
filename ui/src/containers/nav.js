@@ -5,6 +5,7 @@ const options = [
   { title: 'Actions', to: '/ui/actions/', devOnly: true },
   { title: 'Console', to: '/ui/console/', devOnly: true },
   { title: 'Logs', to: '/ui/logs/', devOnly: true },
+  { title: 'Apps', to: '/ui/apps/', devOnly: true },
 ]
 
 export default { options }

@@ -1,10 +1,11 @@
 package handler
 
 import (
+	"fmt"
 	"io"
-	"io/ioutil"
 	stdhttp "net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/seashell/aqueduct/aqueduct/application/structs"
@@ -45,20 +46,28 @@ func (a *FileSystemHandlerAdapter) list(resp http.Response, req *http.Request) (
 		Items: []*structs.GetFileOutput{},
 	}
 
-	files, err := ioutil.ReadDir(a.path)
-	if err != nil {
-		return nil, err
-	}
-	for _, f := range files {
-		out.Items = append(out.Items, &structs.GetFileOutput{
-			ID:        f.Name(),
-			Name:      f.Name(),
-			Extension: f.Name(),
-			Size:      int(f.Size()),
-			IsDir:     f.IsDir(),
-			IsHidden:  strings.HasPrefix(f.Name(), "."),
-			ModDate:   f.ModTime(),
+	err := filepath.Walk(a.path,
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			if path != a.path {
+				fmt.Println(path)
+				fmt.Println(info.Name())
+				out.Items = append(out.Items, &structs.GetFileOutput{
+					Path:     strings.Replace(path, a.path, "", 1),
+					Size:     int(info.Size()),
+					IsDir:    info.IsDir(),
+					IsHidden: strings.HasPrefix(info.Name(), "."),
+					ModDate:  info.ModTime(),
+				})
+			}
+
+			return nil
 		})
+	if err != nil {
+		a.logger.Errorf(err.Error())
 	}
 
 	return out, nil

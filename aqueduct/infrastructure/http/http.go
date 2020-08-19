@@ -6,7 +6,6 @@ import (
 	"net"
 	"net/http"
 	"strings"
-	"time"
 
 	middleware "github.com/seashell/aqueduct/aqueduct/infrastructure/http/middleware"
 	log "github.com/seashell/aqueduct/pkg/log"
@@ -54,12 +53,12 @@ func NewServer(config *ServerConfig) (*Server, error) {
 // Run :
 func (s *Server) Run() {
 	httpServer := http.Server{
-		Addr:              s.listener.Addr().String(),
-		Handler:           s.mux,
-		ReadTimeout:       30 * time.Second,
-		WriteTimeout:      30 * time.Second,
-		IdleTimeout:       30 * time.Second,
-		ReadHeaderTimeout: 30 * time.Second,
+		Addr:    s.listener.Addr().String(),
+		Handler: s.mux,
+		//ReadTimeout:       30 * time.Second,
+		//WriteTimeout:      30 * time.Second,
+		//IdleTimeout:       30 * time.Second,
+		//ReadHeaderTimeout: 30 * time.Second,
 	}
 
 	go func() {

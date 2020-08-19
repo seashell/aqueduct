@@ -3,13 +3,19 @@ import styled from 'styled-components'
 import { useDropzone } from 'react-dropzone'
 import { Portal } from 'react-portal'
 
+import { useQuery } from '@apollo/client'
+import { GET_FILES } from '_graphql/actions/files'
+import { useLocation } from '@reach/router'
+
+import { icons } from '_assets/'
+
 import Box from '_components/box'
 import Text from '_components/text'
 import Icon from '_components/icon'
 import Button from '_components/button'
+import Collapse from '_components/collapse'
 import SearchInput from '_components/inputs/search-input'
 import { Bars as Spinner } from '_components/spinner'
-import { icons } from '_assets/'
 
 import File from './file'
 
@@ -19,6 +25,10 @@ const Container = styled(Box)`
 
 const FileManagerHeader = styled(Box)`
   justify-content: flex-end;
+`
+
+const StyledCollapse = styled(Collapse)`
+  padding-left: 16px;
 `
 
 const UploadButton = props => (
@@ -37,7 +47,9 @@ const UploadButton = props => (
   </Button>
 )
 
-const FilesBrowserView = () => {
+const FilesView = () => {
+  const location = useLocation()
+
   const [selectedFiles, setSelectedFiles] = useState(null)
   const [searchString, setSearchString] = useState('')
 
@@ -49,7 +61,13 @@ const FilesBrowserView = () => {
     },
   })
 
-  useEffect(() => {}, [])
+  const getFilesQuery = useQuery(GET_FILES, {
+    variables: {},
+  })
+
+  useEffect(() => {
+    getFilesQuery.refetch()
+  }, [location])
 
   const handleToggleSelectionButtonClick = () => {
     if (selectedFiles === null) {
@@ -74,13 +92,74 @@ const FilesBrowserView = () => {
     openFileDialog()
   }
 
-  const files = [
-    { name: 'tools', isDir: true },
-    { name: 'aaa/instructions.txt' },
-    { name: 'drago.hcl' },
-  ]
-    .sort(el => (el.isDir ? -1 : 1))
-    .filter(el => el.name.includes(searchString))
+  const isLoading = getFilesQuery.loading
+
+  if (isLoading) {
+    return <Spinner />
+  }
+
+  const files = getFilesQuery.data
+    ? getFilesQuery.data.result.items
+    : [].sort(el => (el.isDir ? -1 : 1)).filter(el => el.name.includes(searchString))
+
+  const tree = files.reduce((t, file) => {
+    let node = t
+    file.path.split('/').forEach(el => {
+      if (!node[el]) {
+        node[el] = {}
+      }
+      node = node[el]
+    })
+    node.path = file.path
+    node.attrs = {
+      name: file.path.split('/').pop(),
+      isDir: file.isDir,
+      size: file.size,
+    }
+    return t
+  }, {})
+
+  // eslint-disable-next-line no-shadow
+  const renderTree = tree => {
+    const keys = Object.keys(tree)
+    const sortedKeys = keys.sort(k => {
+      if (k === 'attrs' || k === 'path') return 0
+      if (tree[k].attrs.isDir) {
+        return -1
+      }
+      return 1
+    })
+
+    return sortedKeys.map(key => {
+      if (key === 'attrs' || key === 'path') return false
+      const node = tree[key]
+      return node.attrs.isDir ? (
+        <StyledCollapse
+          title={
+            <File
+              path={node.path}
+              name={node.attrs.name}
+              isDir={node.attrs.isDir}
+              isSelected={selectedFiles !== null && selectedFiles.indexOf(node.path) !== -1}
+              isSelecting={selectedFiles !== null}
+              onClick={() => {}}
+            />
+          }
+        >
+          {renderTree(node)}
+        </StyledCollapse>
+      ) : (
+        <File
+          path={node.path}
+          name={node.attrs.name}
+          isDir={node.attrs.isDir}
+          isSelected={selectedFiles !== null && selectedFiles.indexOf(node.path) !== -1}
+          isSelecting={selectedFiles !== null}
+          onClick={() => handleFileClicked(node.path)}
+        />
+      )
+    })
+  }
 
   return (
     <Container>
@@ -120,18 +199,10 @@ const FilesBrowserView = () => {
         height="60vh"
       >
         <input {...getInputProps()} />
-        {files.map(el => (
-          <File
-            name={el.name}
-            isDir={el.isDir}
-            isSelected={selectedFiles !== null && selectedFiles.indexOf(el.name) !== -1}
-            isSelecting={selectedFiles !== null}
-            onClick={() => handleFileClicked(el.name)}
-          />
-        ))}
+        {renderTree(tree)}
       </Box>
     </Container>
   )
 }
 
-export default FilesBrowserView
+export default FilesView

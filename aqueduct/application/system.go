@@ -20,13 +20,22 @@ func NewSystemService() SystemService {
 
 func (s *systemService) GetInfo() (*structs.SystemInfoOutput, error) {
 
-	out, err := exec.Command("uname", "-s", "-r").Output()
+	os, err := exec.Command("uname", "--kernel-name", "-r").Output()
+	if err != nil {
+		return nil, err
+	}
+
+	hostname, err := exec.Command("uname", "--nodename").Output()
 	if err != nil {
 		return nil, err
 	}
 
 	return &structs.SystemInfoOutput{
-		OS:       string(out),
-		Aqueduct: version.GetVersion().VersionNumber(),
+		OS:          string(os),
+		ProductUUID: "",
+		Aqueduct:    version.GetVersion().VersionNumber(),
+		Hostname:    string(hostname),
+		Nomad:       "",
+		Consul:      "",
 	}, nil
 }

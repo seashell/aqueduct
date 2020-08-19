@@ -88,13 +88,15 @@ export const NewProjectNav = styled(NavLink).attrs({
   }
 `
 
-export const CollapsibleSection = styled(Collapse).attrs({
-  px: 3,
-  py: 2,
-})`
+export const CollapsibleSectionTitle = styled.p`
   color: ${props => props.theme.colors.neutral};
   font-weight: 500;
   font-size: 0.76rem;
   letter-spacing: 0.06rem;
   text-transform: uppercase;
+  margin: 8px;
 `
+
+export const CollapsibleSection = styled(Collapse).attrs({
+  py: 2,
+})``

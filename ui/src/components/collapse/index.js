@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { space } from 'styled-system'
+import { space, color } from 'styled-system'
 import { icons } from '_assets'
 
 const Header = styled.div.attrs({
@@ -11,19 +11,20 @@ const Header = styled.div.attrs({
   display: flex;
   align-items: center;
   justify-content: space-between;
+  ${color}
   ${space}
 `
 
 Header.defaultProps = {
-  paddingTop: 2,
-  paddingBottom: 2,
+  paddingTop: 0,
+  paddingBottom: 0,
 }
 
 const Content = styled.div`
   ${space}
 `
 
-const Collapse = ({ title, children, ...props }) => {
+const Collapse = ({ title, headerProps, children, ...props }) => {
   const [isCollapseOpen, setCollapseOpen] = useState(props.isOpen)
 
   const handleHeaderClick = () => {
@@ -32,24 +33,28 @@ const Collapse = ({ title, children, ...props }) => {
 
   return (
     <>
-      <Header className="header" onClick={handleHeaderClick} {...props}>
+      <Header className="header" onClick={handleHeaderClick} {...headerProps}>
         {title}
         {isCollapseOpen ? <icons.ArrowUp className="indicator" /> : <icons.ArrowDown />}
       </Header>
-      {isCollapseOpen && <Content>{children}</Content>}
+      {isCollapseOpen && (
+        <Content className="content" {...props}>
+          {children}
+        </Content>
+      )}
     </>
   )
 }
 
 Collapse.propTypes = {
-  header: PropTypes.node,
+  headerProps: PropTypes.node,
   title: PropTypes.node.isRequired,
   isOpen: PropTypes.bool,
   children: PropTypes.node,
 }
 
 Collapse.defaultProps = {
-  header: null,
+  headerProps: undefined,
   children: undefined,
   isOpen: false,
 }

@@ -165,7 +165,9 @@ const Header = props => {
           </Box>
           <Box flexDirection="column" mt={3}>
             {nav.options.map(el => (
-              <Nav to={el.to}>{el.title}</Nav>
+              <Nav key={el.title} to={el.to}>
+                {el.title}
+              </Nav>
             ))}
           </Box>
           <Box bg="#f7f7f9" alignItems="center" p="16px" />
