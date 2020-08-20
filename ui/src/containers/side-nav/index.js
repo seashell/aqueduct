@@ -2,7 +2,6 @@ import React from 'react'
 
 import nav from '_containers/nav'
 import Box from '_components/box'
-import Text from '_components/text'
 import Separator from '_components/separator'
 
 import { Container, NavLink, CollapsibleSection, CollapsibleSectionTitle } from './styled'

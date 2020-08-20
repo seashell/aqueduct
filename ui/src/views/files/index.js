@@ -98,11 +98,13 @@ const FilesView = () => {
     return <Spinner />
   }
 
-  const files = getFilesQuery.data
-    ? getFilesQuery.data.result.items
-    : [].sort(el => (el.isDir ? -1 : 1)).filter(el => el.name.includes(searchString))
+  const files = getFilesQuery.data ? getFilesQuery.data.result.items : []
 
-  const tree = files.reduce((t, file) => {
+  const filteredFiles = files
+    .sort(el => (el.isDir ? -1 : 1))
+    .filter(el => el.path.includes(searchString))
+
+  const tree = filteredFiles.reduce((t, file) => {
     let node = t
     file.path.split('/').forEach(el => {
       if (!node[el]) {
