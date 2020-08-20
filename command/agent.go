@@ -86,6 +86,7 @@ func (c *AgentCommand) parseConfig(args []string) *aqueduct.Config {
 	flags.IntVar(&cmdConfig.Ports.HTTP, "http-port", 0, "")
 	flags.BoolVar(&cmdConfig.Hotspot.Enabled, "enable-hotspot", false, "")
 	flags.StringVar(&cmdConfig.Hotspot.SSID, "hotspot-ssid", "", "")
+	flags.StringVar(&cmdConfig.Hotspot.Password, "hotspot-password", "", "")
 
 	if err := flags.Parse(args); err != nil {
 		c.UI.Error("==> Error: " + err.Error() + "\n")
@@ -181,6 +182,10 @@ Agent Options:
 	-hotspot-ssid=<name>
 	 Specify the hotspot name, in case the agent is configured to 
 	 start a hotspot connection. Defaults to "aqueduct-ap".
+
+	-hotspot-password=<password>
+	 Specify the hotspot password, in case the agent is configured to 
+	 start a hotspot connection. Defaults to an empty password.
 
 
 `
