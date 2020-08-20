@@ -1,14 +1,13 @@
 package handler
 
 import (
-	"fmt"
 	"io"
 	stdhttp "net/http"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/seashell/aqueduct/aqueduct/application/structs"
+	structs "github.com/seashell/aqueduct/aqueduct/application/structs"
 	http "github.com/seashell/aqueduct/aqueduct/infrastructure/http"
 	log "github.com/seashell/aqueduct/pkg/log"
 )
@@ -35,7 +34,7 @@ func NewFileSystemHandlerAdapter(path string, logger log.Logger) *FileSystemHand
 
 	a.RegisterHandlerFunc("GET", "/", a.list)
 	a.RegisterHandlerFunc("POST", "/", a.upload)
-	a.RegisterHandlerFunc("DELETE", "/:filename", a.delete)
+	a.RegisterHandlerFunc("DELETE", "/:path", a.delete)
 
 	return a
 }
@@ -53,8 +52,6 @@ func (a *FileSystemHandlerAdapter) list(resp http.Response, req *http.Request) (
 			}
 
 			if path != a.path {
-				fmt.Println(path)
-				fmt.Println(info.Name())
 				out.Items = append(out.Items, &structs.GetFileOutput{
 					Path:     strings.Replace(path, a.path, "", 1),
 					Size:     int(info.Size()),
@@ -76,23 +73,44 @@ func (a *FileSystemHandlerAdapter) list(resp http.Response, req *http.Request) (
 func (a *FileSystemHandlerAdapter) upload(resp http.Response, req *http.Request) (interface{}, error) {
 
 	req.ParseMultipartForm(32 << 20)
-	file, handler, err := req.FormFile("uploadfile")
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
 
-	f, err := os.OpenFile(a.path+"/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
-	if err != nil {
-		return nil, err
-	}
+	m := req.MultipartForm
 
-	defer f.Close()
-	io.Copy(f, file)
+	files := m.File["files"]
+	for i := range files {
+		file, err := files[i].Open()
+
+		defer file.Close()
+		if err != nil {
+			return nil, err
+		}
+
+		dst, err := os.Create(a.path + "/" + files[i].Filename)
+
+		defer dst.Close()
+		if err != nil {
+			return nil, err
+		}
+
+		if _, err := io.Copy(dst, file); err != nil {
+			return nil, err
+		}
+
+	}
 
 	return nil, nil
 }
 
 func (a *FileSystemHandlerAdapter) delete(resp http.Response, req *http.Request) (interface{}, error) {
+
+	in := &structs.DeleteFileInput{
+		Path: req.Params["path"],
+	}
+
+	err := os.RemoveAll(a.path + "/" + in.Path)
+	if err != nil {
+		return nil, err
+	}
+
 	return nil, nil
 }

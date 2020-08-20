@@ -3,6 +3,7 @@ package structs
 import "time"
 
 type GetFileInput struct {
+	Path string
 }
 
 type GetFileOutput struct {
@@ -32,11 +33,7 @@ type GetFileOutput struct {
 }
 
 type DeleteFileInput struct {
-	ID string
-}
-
-type DeleteFileOutput struct {
-	ID string
+	Path string
 }
 
 type ListFilesInput struct {

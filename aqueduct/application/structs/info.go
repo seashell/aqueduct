@@ -6,6 +6,7 @@ type SystemInfoOutput struct {
 	Hostname    string `json:"hostname"`
 	ProductUUID string `json:"productId"`
 	Aqueduct    string `json:"aqueduct"`
+	Wireguard   string `json:"wireguard"`
 	Drago       string `json:"drago"`
 	Nomad       string `json:"nomad"`
 	Consul      string `json:"consul"`

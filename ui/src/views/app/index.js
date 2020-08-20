@@ -65,10 +65,10 @@ const App = () => {
           <Content>
             <HomeView path="/" />
             <NetworksRouter path="/networks/*" />
-            <SystemRouter path="/system/*" />
+            <SystemRouter path="/info/*" />
             <ActionsRouter path="/actions/*" />
             <ConsoleRouter path="/console/*" />
-            <ProvisioningRouter path="/provisioning/*" />
+            <ProvisioningRouter path="/files/*" />
             <NotFound default />
           </Content>
         </Dashboard>

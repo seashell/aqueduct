@@ -3,11 +3,13 @@ import styled from 'styled-components'
 import { useDropzone } from 'react-dropzone'
 import { Portal } from 'react-portal'
 
-import { useQuery } from '@apollo/client'
-import { GET_FILES } from '_graphql/actions/files'
+import { useQuery, useMutation } from '@apollo/client'
+import { GET_FILES, UPLOAD_FILE, DELETE_FILE } from '_graphql/actions/files'
 import { useLocation } from '@reach/router'
 
 import { icons } from '_assets/'
+
+import toast from '_components/toast'
 
 import Box from '_components/box'
 import Text from '_components/text'
@@ -53,16 +55,35 @@ const FilesView = () => {
   const [selectedFiles, setSelectedFiles] = useState(null)
   const [searchString, setSearchString] = useState('')
 
+  const getFilesQuery = useQuery(GET_FILES, {
+    variables: {},
+  })
+
+  const [deleteFile, deleteFileMutation] = useMutation(DELETE_FILE, {
+    onCompleted: () => {
+      getFilesQuery.refetch()
+    },
+    onError: () => {
+      toast.error('Error deleting files')
+    },
+  })
+
+  const [uploadFile, uploadFileMutation] = useMutation(UPLOAD_FILE, {
+    onCompleted: () => {
+      toast.success('Success uploading files')
+      getFilesQuery.refetch()
+    },
+    onError: () => {
+      toast.error('Error uploading files')
+    },
+  })
+
   const { getRootProps, getInputProps, open: openFileDialog, isDragActive } = useDropzone({
     noClick: true,
     noKeyboard: true,
     onDrop: files => {
-      console.log('UPLOAD: ', files)
+      uploadFile({ variables: { input: files } })
     },
-  })
-
-  const getFilesQuery = useQuery(GET_FILES, {
-    variables: {},
   })
 
   useEffect(() => {
@@ -85,6 +106,16 @@ const FilesView = () => {
       } else {
         setSelectedFiles(selectedFiles.filter(el => el !== filename))
       }
+    } else {
+      window.open(`/files/${filename}`, '_blank')
+    }
+  }
+
+  const handlDeleteFilesButtonClick = () => {
+    if (selectedFiles !== null) {
+      selectedFiles.forEach(path => {
+        deleteFile({ variables: { path } })
+      })
     }
   }
 
@@ -171,7 +202,7 @@ const FilesView = () => {
         </Box>
       </Portal>
       <Box mb={3}>
-        <Text textStyle="title">Provisioning</Text>
+        <Text textStyle="title">Files</Text>
       </Box>
       <Box my={3} alignItems="center">
         <SearchInput
@@ -189,7 +220,13 @@ const FilesView = () => {
           {selectedFiles === null ? 'Select' : 'Cancel'}
         </Button>
         {selectedFiles != null && (
-          <Button variant="danger" height="42px" width="120px" ml={2}>
+          <Button
+            variant="danger"
+            height="42px"
+            width="120px"
+            ml={2}
+            onClick={handlDeleteFilesButtonClick}
+          >
             Delete
           </Button>
         )}

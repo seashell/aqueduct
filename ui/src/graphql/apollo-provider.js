@@ -58,6 +58,16 @@ export const CustomApolloProvider = ({ children }) => {
 
   const restLink = new RestLink({
     uri: REST_API_URL,
+    bodySerializers: {
+      fileEncode: (data, headers) => {
+        const formData = new FormData()
+        data.forEach((file, _) => {
+          formData.append('files', file, file.name)
+        })
+        headers.set('Accept', '*/*')
+        return { body: formData, headers }
+      },
+    },
   })
 
   const cache = new InMemoryCache()
