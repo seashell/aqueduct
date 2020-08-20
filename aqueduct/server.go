@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sync"
-	
+
 	application "github.com/seashell/aqueduct/aqueduct/application"
 	http "github.com/seashell/aqueduct/aqueduct/infrastructure/http"
 	handler "github.com/seashell/aqueduct/aqueduct/infrastructure/http/handler"
@@ -15,6 +15,7 @@ import (
 	ui "github.com/seashell/aqueduct/ui"
 )
 
+// Server :
 type Server struct {
 	config *Config
 	logger log.Logger
@@ -23,12 +24,11 @@ type Server struct {
 	shutdownLock sync.Mutex
 
 	httpServer *http.Server
-	nm *networkmanager.NetworkManager
-
+	nm         *networkmanager.NetworkManager
 
 	services struct {
 		networks application.NetworkService
-		system   application.SystemService
+		system   application.SystemInfoService
 	}
 
 	shutdownCtx    context.Context
@@ -36,7 +36,7 @@ type Server struct {
 	shutdownCh     <-chan struct{}
 }
 
-// Create a new Aqueduct server, potentially returning an error
+// NewServer creates a new Aqueduct server, potentially returning an error
 func NewServer(config *Config) (*Server, error) {
 
 	logger, err := logrus.NewLoggerAdapter(logrus.Config{
@@ -73,21 +73,21 @@ func NewServer(config *Config) (*Server, error) {
 
 	if config.Hotspot.Enabled == true {
 
-			s.logger.Debugf("Starting WiFi Hotspot ...")
-			
-			if err := nm.StartHotspot(&networkmanager.Hotspot{
-				SSID: config.Hotspot.SSID,
-				Mode: config.Hotspot.Mode,
-				Password: config.Hotspot.Password,
-				GatewayAddress: config.Hotspot.GatewayAddress,	
-			}); err != nil {
-				return nil, err
-			}
+		s.logger.Debugf("Starting WiFi Hotspot ...")
+
+		if err := nm.StartHotspot(&networkmanager.Hotspot{
+			SSID:           config.Hotspot.SSID,
+			Mode:           config.Hotspot.Mode,
+			Password:       config.Hotspot.Password,
+			GatewayAddress: config.Hotspot.GatewayAddress,
+		}); err != nil {
+			return nil, err
+		}
 	}
 
 	s.nm = nm
 	s.services.networks = application.NewNetworkService(nm)
-	s.services.system = application.NewSystemService()
+	s.services.system = application.NewSystemInfoService()
 
 	// Setup HTTP server
 	if err := s.setupHTTPServer(); err != nil {
@@ -129,9 +129,10 @@ func (s *Server) setupHTTPServer() error {
 	return nil
 }
 
+// Shutdown :
 func (s *Server) Shutdown() error {
 	if s.config.Hotspot.Enabled {
-		s.nm.StopHotspot(s.config.Hotspot.SSID)	
+		s.nm.StopHotspot(s.config.Hotspot.SSID)
 	}
 	return nil
 }

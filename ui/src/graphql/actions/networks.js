@@ -15,8 +15,8 @@ export const GET_NETWORKS = gql`
 
 export const CONFIGURE_NETWORK = gql`
   mutation configureNetwork($ssid: String!, $password: String!) {
-    configureNetwork(input: { ssid: $ssid, password: $password })
-      @rest(method: "POST", path: "projects/", type: "Project") {
+    configureNetwork(ssid: $ssid, input: { ssid: $ssid, password: $password })
+      @rest(method: "PUT", path: "networks/{args.ssid}", type: "Project") {
       id
     }
   }

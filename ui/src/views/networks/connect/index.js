@@ -13,6 +13,8 @@ import Button from '_components/button'
 import toast from '_components/toast'
 import TextInput from '_components/inputs/text-input'
 import { useConfirmationDialog } from '_components/confirmation-dialog'
+import { useMutation } from '@apollo/client'
+import { CONFIGURE_NETWORK } from '_graphql/actions/networks'
 
 const Container = styled(Box)`
   flex-direction: column;
@@ -34,6 +36,15 @@ const ConnectionSetupView = ({ ssid }) => {
     }),
   })
 
+  const [configureNetwork, configureNetworkMutation] = useMutation(CONFIGURE_NETWORK, {
+    onCompleted: () => {
+      toast.success('Network successfully saved')
+    },
+    onError: () => {
+      toast.error('Error saving network')
+    },
+  })
+
   useEffect(() => {
     window.scrollTo(0, 0)
   })
@@ -46,7 +57,7 @@ const ConnectionSetupView = ({ ssid }) => {
           details: 'Are you sure you want to save this network configuration?',
           isDestructive: false,
           onConfirm: () => {
-            // saveNetwork({ variables: { ...formik.values } })
+            configureNetwork({ variables: { ...formik.values } })
           },
           onCancel: () => {},
         })

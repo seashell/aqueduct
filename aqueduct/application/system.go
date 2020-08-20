@@ -7,18 +7,21 @@ import (
 	"github.com/seashell/aqueduct/version"
 )
 
-type SystemService interface {
+// SystemInfoService :
+type SystemInfoService interface {
 	GetInfo() (*structs.SystemInfoOutput, error)
 }
 
-type systemService struct {
+type systemInfoService struct {
 }
 
-func NewSystemService() SystemService {
-	return &systemService{}
+// NewSystemInfoService :
+func NewSystemInfoService() SystemInfoService {
+	return &systemInfoService{}
 }
 
-func (s *systemService) GetInfo() (*structs.SystemInfoOutput, error) {
+// GetInfo :
+func (s *systemInfoService) GetInfo() (*structs.SystemInfoOutput, error) {
 
 	os, err := exec.Command("uname", "--kernel-name", "-r").Output()
 	if err != nil {

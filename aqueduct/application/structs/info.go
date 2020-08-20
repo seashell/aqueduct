@@ -1,5 +1,6 @@
 package structs
 
+// SystemInfoOutput :
 type SystemInfoOutput struct {
 	OS          string `json:"os"`
 	MAC         string `json:"mac"`

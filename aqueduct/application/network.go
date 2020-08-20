@@ -4,10 +4,13 @@ import (
 	structs "github.com/seashell/aqueduct/aqueduct/application/structs"
 )
 
+// NetworkService :
 type NetworkService interface {
-	FindAll(in *structs.ListNetworksInput) (*structs.ListNetworksOutput, error)
+	FindAll() (*structs.ListNetworksOutput, error)
+	Configure(i *structs.ConfigureNetworkInput) (*structs.ConfigureNetworkOutput, error)
 }
 
+// AccessPoint :
 type AccessPoint interface {
 	SSID() string
 	RSSI() int
@@ -15,6 +18,7 @@ type AccessPoint interface {
 	IsConfigured() bool
 }
 
+// NetworkManager :
 type NetworkManager interface {
 	ListAccessPoints() ([]AccessPoint, error)
 }
@@ -23,11 +27,13 @@ type networkService struct {
 	nm NetworkManager
 }
 
+// NewNetworkService :
 func NewNetworkService(nm NetworkManager) NetworkService {
 	return &networkService{nm}
 }
 
-func (s *networkService) FindAll(in *structs.ListNetworksInput) (*structs.ListNetworksOutput, error) {
+// FindAll :
+func (s *networkService) FindAll() (*structs.ListNetworksOutput, error) {
 
 	aps, err := s.nm.ListAccessPoints()
 	if err != nil {
@@ -45,6 +51,14 @@ func (s *networkService) FindAll(in *structs.ListNetworksInput) (*structs.ListNe
 	return &structs.ListNetworksOutput{
 		Items: nets,
 	}, nil
+}
+
+// Configure :
+func (s *networkService) Configure(in *structs.ConfigureNetworkInput) (*structs.ConfigureNetworkOutput, error) {
+
+	// TODO: call network configuration in the injected infrastructure object
+
+	return &structs.ConfigureNetworkOutput{}, nil
 }
 
 func stringToPtr(s string) *string {
