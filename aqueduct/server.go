@@ -107,6 +107,7 @@ func (s *Server) setupHTTPServer() error {
 			"/api/filesystem/":  handler.NewFileSystemHandlerAdapter(s.config.DataDir, s.logger),
 			"/api/networks/":    handler.NewNetworkHandlerAdapter(s.services.networks, s.logger),
 			"/api/system/":      handler.NewSystemHandlerAdapter(s.services.system, s.logger),
+			"/ws/console/":      handler.NewConsoleHandlerAdapter(s.logger),
 		},
 	}
 

@@ -35,7 +35,7 @@ const SelectionIndicator = styled(Box)`
 `
 
 // eslint-disable-next-line react/prop-types
-const File = ({ name, isDir, isSelected, isSelecting, onClick }) => {
+const File = ({ name, path, isDir, isSelected, isSelecting, onClick }) => {
   const handleClick = () => {
     onClick()
   }

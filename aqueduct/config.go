@@ -86,7 +86,7 @@ func DefaultConfig() *Config {
 	return &Config{
 		UI:       true,
 		BindAddr: "0.0.0.0",
-		DataDir:  "/opt/aqueduct/",
+		DataDir:  "/tmp/aqueduct/",
 		LogLevel: "DEBUG",
 		Ports: &Ports{
 			HTTP: DefaultHTTPPort,

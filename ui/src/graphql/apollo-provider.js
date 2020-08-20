@@ -59,6 +59,16 @@ export const CustomApolloProvider = ({ children }) => {
   const composeUrl = (url, protocol) => `${protocol}://${url}`
 
   const restLink = new RestLink({
+    bodySerializers: {
+      fileEncode: (data, headers) => {
+        const formData = new FormData()
+        data.forEach((file, _) => {
+          formData.append('files', file, file.name)
+        })
+        headers.set('Accept', '*/*')
+        return { body: formData, headers }
+      },
+    },
     uri: composeUrl(REST_API_URL || `${window.location.host}/api/`, 'http'),
   })
 

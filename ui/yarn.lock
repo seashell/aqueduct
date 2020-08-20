@@ -10543,6 +10543,11 @@ rw@1:
   resolved "https://registry.yarnpkg.com/rw/-/rw-1.3.3.tgz#3f862dfa91ab766b14885ef4d01124bfda074fb4"
   integrity sha1-P4Yt+pGrdmsUiF700BEkv9oHT7Q=
 
+rxjs-compat@^6.5.4:
+  version "6.6.2"
+  resolved "https://registry.yarnpkg.com/rxjs-compat/-/rxjs-compat-6.6.2.tgz#23592564243cf24641a5d2e2d2acfc8f6b127186"
+  integrity sha512-C3V7axnAkPd91sbW1XreL8ydLM+phUcKViM76GBuT3hCzHMSQbszE/h6ajkgcrDn9j4JZ/OdzklvfAJ9MmXRcg==
+
 rxjs@^6.4.0:
   version "6.6.2"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.2.tgz#8096a7ac03f2cc4fe5860ef6e572810d9e01c0d2"
@@ -12544,6 +12549,47 @@ xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
+
+xterm-addon-attach@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/xterm-addon-attach/-/xterm-addon-attach-0.6.0.tgz#220c23addd62ab88c9914e2d4c06f7407e44680e"
+  integrity sha512-Mo8r3HTjI/EZfczVCwRU6jh438B4WLXxdFO86OB7bx0jGhwh2GdF4ifx/rP+OB+Cb2vmLhhVIZ00/7x3YSP3dg==
+
+xterm-addon-search-bar@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/xterm-addon-search-bar/-/xterm-addon-search-bar-0.2.0.tgz#e03c020a5ed22f1e8d503946b26a14ade508bc91"
+  integrity sha512-xvXmBA/ShbnzGe5CCy0kqPNNGqjkpuaRgH3Z1iW0V71vCAPRrtJ/v/hMnysZBH7WGUYhlCQr1cJZagW2fBVvSg==
+  dependencies:
+    babel-runtime "^6.26.0"
+    rxjs-compat "^6.5.4"
+
+xterm-addon-search@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/xterm-addon-search/-/xterm-addon-search-0.7.0.tgz#c929d3e5cbb335e82bff72f158ea82936d9cd4ef"
+  integrity sha512-6060evmJJ+tZcjnx33FXaeEHLpuXEa7l9UzUsYfMlCKbu88AbE+5LJocTKCHYd71cwCwb9pjmv/G1o9Rf9Zbcg==
+
+xterm-addon-unicode11@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/xterm-addon-unicode11/-/xterm-addon-unicode11-0.2.0.tgz#9ed0c482b353908bba27778893ca80823382737c"
+  integrity sha512-rjFDItPc/IDoSiEnoDFwKroNwLD/7t9vYKENjrcKVZg5tgJuuUj8D4rZtP6iVCjSB1LTLYmUs4L/EmCqIyLR/Q==
+
+xterm-addon-web-links@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/xterm-addon-web-links/-/xterm-addon-web-links-0.4.0.tgz#265cbf8221b9b315d0a748e1323bee331cd5da03"
+  integrity sha512-xv8GeiINmx0zENO9hf5k+5bnkaE8mRzF+OBAr9WeFq2eLaQSudioQSiT34M1ofKbzcdjSsKiZm19Rw3i4eXamg==
+
+xterm-for-react@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/xterm-for-react/-/xterm-for-react-1.0.4.tgz#6b35b9b037a0f9d979e7b57bb1d7c6ab7565b380"
+  integrity sha512-DCkLR9ZXeW907YyyaCTk/3Ol34VRHfCnf3MAPOkj3dUNA85sDqHvTXN8efw4g7bx7gWdJQRsEpGt2tJOXKG3EQ==
+  dependencies:
+    prop-types "^15.7.2"
+    xterm "^4.5.0"
+
+xterm@^4.5.0, xterm@^4.8.1:
+  version "4.8.1"
+  resolved "https://registry.yarnpkg.com/xterm/-/xterm-4.8.1.tgz#155a1729a43e1a89b406524e22c5634339e39ca1"
+  integrity sha512-ax91ny4tI5eklqIfH79OUSGE2PUX2rGbwONmB6DfqpyhSZO8/cf++sqiaMWEVCMjACyMfnISW7C3gGMoNvNolQ==
 
 "y18n@^3.2.1 || ^4.0.0", y18n@^4.0.0:
   version "4.0.0"

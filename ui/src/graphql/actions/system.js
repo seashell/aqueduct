@@ -5,6 +5,7 @@ export const GET_INFO = gql`
   query getInfo {
     result: info @rest(type: "SystemInfo", path: "system/") {
       os
+      hostname
       aqueduct
       drago
       nomad

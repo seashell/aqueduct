@@ -6,7 +6,8 @@ import HomeView from '_views/home'
 import NotFound from '_views/not-found'
 import NetworksRouter from '_views/networks'
 import ActionsRouter from '_views/actions'
-import ProvisioningRouter from '_views/provision'
+import ConsoleRouter from '_views/console'
+import ProvisioningRouter from '_views/files'
 import SystemRouter from '_views/system'
 
 import { Bars as Spinner } from '_components/spinner'
@@ -64,9 +65,10 @@ const App = () => {
           <Content>
             <HomeView path="/" />
             <NetworksRouter path="/networks/*" />
-            <SystemRouter path="/system/*" />
+            <SystemRouter path="/info/*" />
             <ActionsRouter path="/actions/*" />
-            <ProvisioningRouter path="/provisioning/*" />
+            <ConsoleRouter path="/console/*" />
+            <ProvisioningRouter path="/files/*" />
             <NotFound default />
           </Content>
         </Dashboard>

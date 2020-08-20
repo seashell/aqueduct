@@ -72,6 +72,13 @@
     "typeface-raleway": "^0.0.75",
     "typeface-roboto": "^0.0.75",
     "validator": "^13.0.0",
+    "xterm": "^4.8.1",
+    "xterm-addon-attach": "^0.6.0",
+    "xterm-addon-search": "^0.7.0",
+    "xterm-addon-search-bar": "^0.2.0",
+    "xterm-addon-unicode11": "^0.2.0",
+    "xterm-addon-web-links": "^0.4.0",
+    "xterm-for-react": "^1.0.4",
     "yup": "^0.29.1"
   },
   "devDependencies": {

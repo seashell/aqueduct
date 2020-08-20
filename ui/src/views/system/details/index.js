@@ -49,6 +49,12 @@ const SystemDetailsView = () => {
       </Box>
       <InfoTable>
         <InfoRow>
+          <Text textStyle="strong">Hostname</Text>
+          <Text textStyle="body" ml="auto">
+            {info.hostname}
+          </Text>
+        </InfoRow>
+        <InfoRow>
           <Text textStyle="strong">OS</Text>
           <Text textStyle="body" ml="auto">
             {info.os}

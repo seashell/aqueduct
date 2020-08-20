@@ -3,51 +3,42 @@ package structs
 import "time"
 
 type GetFileInput struct {
+	Path string
 }
 
 type GetFileOutput struct {
-	// (Required) String that uniquely identifies the file
-	ID string
-
-	// (Required) Full name, e.g. `MyImage.jpg`
-	Name string
+	// Path, e.g. `/opt/test/image.jpg`
+	Path string `json:"path"`
 
 	// File extension, e.g. `.jpg`
-	Extension string
+	Extension string `json:"extension"`
 
 	// Is a directory, default: false
-	IsDir bool
+	IsDir bool `json:"isDir"`
 
 	// Is a hidden file, default: false
-	IsHidden bool
+	IsHidden bool `json:"isHidden"`
 
 	// Is a symlink, default: false
-	IsSymlink bool
+	IsSymlink bool `json:"isSymLink"`
 
 	// File size in bytes
-	Size int
+	Size int `json:"size"`
 
 	// Last change date (or its string representation)
-	ModDate time.Time
+	ModDate time.Time `json:"modifiedAt"`
 
 	// Number of files inside of a folder (only for folders)
-	ChildrenCount int
-
-	// Any other user-defined property
-	Properties []string
+	ChildrenCount int `json:"childrenCount"`
 }
 
 type DeleteFileInput struct {
-	ID string
-}
-
-type DeleteFileOutput struct {
-	ID string
+	Path string
 }
 
 type ListFilesInput struct {
 }
 
 type ListFilesOutput struct {
-	Items []*GetFileOutput
+	Items []*GetFileOutput `json:"items"`
 }
