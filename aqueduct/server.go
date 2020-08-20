@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sync"
-
+	
 	application "github.com/seashell/aqueduct/aqueduct/application"
 	http "github.com/seashell/aqueduct/aqueduct/infrastructure/http"
 	handler "github.com/seashell/aqueduct/aqueduct/infrastructure/http/handler"
@@ -23,6 +23,8 @@ type Server struct {
 	shutdownLock sync.Mutex
 
 	httpServer *http.Server
+	nm *networkmanager.NetworkManager
+
 
 	services struct {
 		networks application.NetworkService
@@ -64,6 +66,26 @@ func NewServer(config *Config) (*Server, error) {
 		return nil, err
 	}
 
+	err = nm.PopulateCache()
+	if err != nil {
+		return nil, err
+	}
+
+	if config.Hotspot.Enabled == true {
+
+			s.logger.Debugf("Starting WiFi Hotspot ...")
+			
+			if err := nm.StartHotspot(&networkmanager.Hotspot{
+				SSID: config.Hotspot.SSID,
+				Mode: config.Hotspot.Mode,
+				Password: config.Hotspot.Password,
+				GatewayAddress: config.Hotspot.GatewayAddress,	
+			}); err != nil {
+				return nil, err
+			}
+	}
+
+	s.nm = nm
 	s.services.networks = application.NewNetworkService(nm)
 	s.services.system = application.NewSystemService()
 
@@ -102,5 +124,12 @@ func (s *Server) setupHTTPServer() error {
 
 	s.httpServer.Run()
 
+	return nil
+}
+
+func (s *Server) Shutdown() error {
+	if s.config.Hotspot.Enabled {
+		s.nm.StopHotspot(s.config.Hotspot.SSID)	
+	}
 	return nil
 }

@@ -4,6 +4,8 @@ go 1.14
 
 require (
 	github.com/Wifx/gonetworkmanager v0.2.0
+	github.com/avast/retry-go v2.6.0+incompatible
+	github.com/cenkalti/backoff/v4 v4.0.2
 	github.com/davecgh/go-spew v1.1.1
 	github.com/godbus/dbus/v5 v5.0.3
 	github.com/julienschmidt/httprouter v1.3.0
