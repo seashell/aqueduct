@@ -16,6 +16,7 @@ type ServerConfig struct {
 	Logger log.Logger
 }
 
+// DefaultConfig :
 func DefaultConfig() *ServerConfig {
 	return &ServerConfig{
 		BindAddress: "0.0.0.0:9898",
@@ -23,6 +24,7 @@ func DefaultConfig() *ServerConfig {
 	}
 }
 
+// Merge :
 func (s *ServerConfig) Merge(b *ServerConfig) *ServerConfig {
 	result := *s
 	if b.BindAddress != "" {

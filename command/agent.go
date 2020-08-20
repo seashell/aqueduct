@@ -14,18 +14,22 @@ import (
 	"github.com/seashell/aqueduct/version"
 )
 
+// AgentCommand :
 type AgentCommand struct {
 	UI cli.UI
 }
 
+// Name :
 func (c *AgentCommand) Name() string {
 	return "agent"
 }
 
+// Synopsis :
 func (c *AgentCommand) Synopsis() string {
 	return "Runs an aqueduct agent"
 }
 
+// Run :
 func (c *AgentCommand) Run(ctx context.Context, args []string) int {
 
 	config := c.parseConfig(args)
@@ -56,7 +60,6 @@ func (c *AgentCommand) Run(ctx context.Context, args []string) int {
 
 	c.UI.Output("==> Aqueduct agent started! Log data will stream in below:\n")
 
-
 	return c.handleSignals()
 }
 
@@ -72,7 +75,7 @@ func (c *AgentCommand) parseConfig(args []string) *aqueduct.Config {
 	}
 
 	cmdConfig := &aqueduct.Config{
-		Ports: &aqueduct.Ports{},
+		Ports:   &aqueduct.Ports{},
 		Hotspot: &aqueduct.Hotspot{},
 	}
 
@@ -114,7 +117,7 @@ func (c *AgentCommand) printConfig(config *aqueduct.Config) {
 
 	padding := 18
 	c.UI.Output("==> Aqueduct agent configuration:\n")
-	for k, _ := range info {
+	for k := range info {
 		c.UI.Info(fmt.Sprintf(
 			"%s%s: %s",
 			strings.Repeat(" ", padding-len(k)),
@@ -142,6 +145,7 @@ func (c *AgentCommand) handleSignals() int {
 	return 1
 }
 
+// Help :
 func (c *AgentCommand) Help() string {
 	h := `
 Usage: aqueduct agent [options]
@@ -186,7 +190,6 @@ Agent Options:
 	-hotspot-password=<password>
 	 Specify the hotspot password, in case the agent is configured to 
 	 start a hotspot connection. Defaults to an empty password.
-
 
 `
 	return strings.TrimSpace(h)

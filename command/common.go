@@ -8,6 +8,7 @@ import (
 	cli "github.com/seashell/aqueduct/pkg/cli"
 )
 
+// RootFlagSet :
 type RootFlagSet struct {
 	*flag.FlagSet
 	// Attributes containing values parsed from user input (e.g., flags,

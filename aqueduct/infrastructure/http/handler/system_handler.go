@@ -6,13 +6,15 @@ import (
 	log "github.com/seashell/aqueduct/pkg/log"
 )
 
+// SystemHandlerAdapter :
 type SystemHandlerAdapter struct {
 	http.BaseHandlerAdapter
-	service application.SystemService
+	service application.SystemInfoService
 	logger  log.Logger
 }
 
-func NewSystemHandlerAdapter(service application.SystemService, logger log.Logger) *SystemHandlerAdapter {
+// NewSystemHandlerAdapter :
+func NewSystemHandlerAdapter(service application.SystemInfoService, logger log.Logger) *SystemHandlerAdapter {
 
 	a := &SystemHandlerAdapter{}
 	a.service = service

@@ -2,10 +2,12 @@ package structs
 
 import "time"
 
+// GetFileInput :
 type GetFileInput struct {
 	Path string
 }
 
+// GetFileOutput :
 type GetFileOutput struct {
 	// Path, e.g. `/opt/test/image.jpg`
 	Path string `json:"path"`
@@ -29,13 +31,16 @@ type GetFileOutput struct {
 	URL string `json:"url"`
 }
 
+// DeleteFileInput :
 type DeleteFileInput struct {
 	Path string
 }
 
+// ListFilesInput :
 type ListFilesInput struct {
 }
 
+// ListFilesOutput :
 type ListFilesOutput struct {
 	Items []*GetFileOutput `json:"items"`
 }

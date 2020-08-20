@@ -1,20 +1,18 @@
 package networkmanager
 
 import (
-	"testing"
 	"encoding/json"
 	"fmt"
+	"testing"
 )
-
 
 func PrettyPrint(v interface{}) (err error) {
 	b, err := json.MarshalIndent(v, "", "  ")
 	if err == nil {
-			  fmt.Println(string(b))
+		fmt.Println(string(b))
 	}
 	return
 }
-
 
 func TestListWifiNetworks(t *testing.T) {
 	nm, err := NewNetworkManager()
@@ -37,20 +35,20 @@ func TestStartStopHotspot(t *testing.T) {
 	}
 
 	hs := &Hotspot{
-		SSID: "aqueduct-ap",
-		Password: "12345678",
-		Mode: "ap",
+		SSID:           "aqueduct-ap",
+		Password:       "12345678",
+		Mode:           "ap",
 		GatewayAddress: "10.42.0.1",
 	}
-	
-	if err := nm.StartHotspot(hs);err != nil {
+
+	if err := nm.StartHotspot(hs); err != nil {
 		t.Error(err)
 	}
-	
-	if err := nm.StopHotspot(hs.SSID);err != nil {
+
+	if err := nm.StopHotspot(hs.SSID); err != nil {
 		t.Error(err)
 	}
-	
+
 }
 
 func TestAddRemoveConnectionWithPassword(t *testing.T) {
@@ -60,15 +58,15 @@ func TestAddRemoveConnectionWithPassword(t *testing.T) {
 	}
 
 	newConn := &Connection{
-		SSID: "aquedutc-test-connection",
+		SSID:     "aqueduct-test-connection",
 		Password: "12345678",
 	}
-	
-	if err := nm.AddConnection(newConn);err != nil {
+
+	if err := nm.AddConnection(newConn); err != nil {
 		t.Error(err)
 	}
 
-	if err := nm.RemoveConnection(newConn.SSID);err != nil {
+	if err := nm.RemoveConnection(newConn.SSID); err != nil {
 		t.Error(err)
 	}
 
@@ -83,12 +81,12 @@ func TestAddRemoveConnectionWithoutPassword(t *testing.T) {
 	newConn := &Connection{
 		SSID: "aquedutc-test-connection",
 	}
-	
-	if err := nm.AddConnection(newConn);err != nil {
+
+	if err := nm.AddConnection(newConn); err != nil {
 		t.Error(err)
 	}
 
-	if err := nm.RemoveConnection(newConn.SSID);err != nil {
+	if err := nm.RemoveConnection(newConn.SSID); err != nil {
 		t.Error(err)
 	}
 }
