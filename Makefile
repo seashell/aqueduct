@@ -23,8 +23,7 @@ build/linux_amd64/aqueduct: CMD='CGO_ENABLED=$(CGO_ENABLED) GOOS=linux GOARCH=am
 								go build \
 								-trimpath \
 								-ldflags $(GO_LDFLAGS) \
-								-o "$@" \
-								./cmd/main.go'							
+								-o "$@" '							
 build/linux_amd64/aqueduct: $(SOURCE_FILES) ## Build aqueduct for linux/amd64
 	@eval ${CMD}
 
@@ -32,8 +31,7 @@ build/linux_arm64/aqueduct: CMD='CGO_ENABLED=$(CGO_ENABLED) GOOS=linux GOARCH=am
 								go build ./cmd/main.go \
 								-trimpath \
 								-ldflags $(GO_LDFLAGS) \
-								-o "$@" \
-								./cmd/main.go'							
+								-o "$@" '							
 build/linux_arm64/aqueduct: $(SOURCE_FILES) ## Build aqueduct for linux/amd64
 	@eval ${CMD}
 
@@ -45,7 +43,13 @@ dev: DEV_TARGET=build/$(GOOS)_$(GOARCH)/aqueduct
 dev: ## Build for the current development platform
 	@echo "==> Removing old development binary..."
 	@rm -rf $(PROJECT_ROOT)/build
+	@$(MAKE) ui
 	@$(MAKE) --no-print-directory $(DEV_TARGET)
+
+.PHONY: ui
+ui: ## Generate UI .go bundle
+	@echo "==> Generating UI bundle..."
+	@go generate
 
 .PHONY: clean
 clean: ## Remove build artifacts
