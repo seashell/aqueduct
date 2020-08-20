@@ -56,8 +56,10 @@ export const CustomApolloProvider = ({ children }) => {
 
   const dedupLink = new DedupLink()
 
+  const composeUrl = (url, protocol) => `${protocol}://${url}`
+
   const restLink = new RestLink({
-    uri: REST_API_URL,
+    uri: composeUrl(REST_API_URL || `${window.location.host}/api/`, 'http'),
   })
 
   const cache = new InMemoryCache()
