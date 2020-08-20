@@ -55,10 +55,6 @@ func (s *Server) Run() {
 	httpServer := http.Server{
 		Addr:    s.listener.Addr().String(),
 		Handler: s.mux,
-		//ReadTimeout:       30 * time.Second,
-		//WriteTimeout:      30 * time.Second,
-		//IdleTimeout:       30 * time.Second,
-		//ReadHeaderTimeout: 30 * time.Second,
 	}
 
 	go func() {

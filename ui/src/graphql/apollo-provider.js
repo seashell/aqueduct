@@ -38,7 +38,7 @@ export const CustomApolloProvider = ({ children }) => {
 
   const withOrganizationID = setContext(() => {
     const oid = JSON.parse(localStorage.getItem('seashell.organizationId'))
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       resolve({ orgId: oid })
     })
   })

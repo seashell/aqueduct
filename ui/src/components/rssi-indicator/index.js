@@ -17,7 +17,6 @@ const Container = styled(Box)`
 
 const BarsIndicator = ({ value, colorFilled, colorEmpty, ...props }) => {
   const filledBars = Math.floor(value / 20)
-  console.log(props)
   return (
     <Container {...props}>
       <svg width="134.55mm" height="115.69mm" version="1.1" viewBox="0 0 134.55 115.69">

@@ -1,8 +1,8 @@
 {
   "parser": "babel-eslint",
-  
+
   "extends": ["react-app", "airbnb", "prettier", "prettier/react"],
-  
+
   "env": {
     "browser": true,
     "node": true
@@ -17,9 +17,10 @@
   },
 
   "plugins": ["react", "prettier"],
-  
+
   "rules": {
     "no-unused-vars": "warn",
+    "react/jsx-curly-brace-presence": "off",
     "no-param-reassign": "off",
     "no-use-before-define": "off",
     "no-nested-ternary": "off",
@@ -27,6 +28,7 @@
     "import/no-extraneous-dependencies": "off",
     "jsx-a11y/anchor-is-valid": "off",
     "react-hooks/exhaustive-deps": "off",
+    "react/jsx-props-no-spreading": "off",
 
     "prettier/prettier": [
       "error",
@@ -37,7 +39,11 @@
         "jsxBracketSameLine": false,
         "semi": false,
         "parser": "babel",
-        "printWidth": 100
+        "printWidth": 100,
+        "arrowParens": "always"
+      },
+      {
+        "usePrettierrc": false
       }
     ]
   }

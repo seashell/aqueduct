@@ -26,7 +26,7 @@ const ConsoleView = () => {
   const webLinksAddon = new WebLinksAddon()
   const unicodeAddon = new Unicode11Addon()
 
-  ws.onmessage = msg => {
+  ws.onmessage = (msg) => {
     if (msg.data === 'ping') {
       ws.send('pong')
     } else {
@@ -34,7 +34,7 @@ const ConsoleView = () => {
     }
   }
 
-  ws.onerror = error => {
+  ws.onerror = (error) => {
     console.log(error)
   }
 

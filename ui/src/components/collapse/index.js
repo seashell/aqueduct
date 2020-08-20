@@ -24,11 +24,13 @@ const Content = styled.div`
   ${space}
 `
 
-const Collapse = ({ title, headerProps, children, ...props }) => {
-  const [isCollapseOpen, setCollapseOpen] = useState(props.isOpen)
+const Collapse = ({ title, headerProps, isDisabled, children, isOpen, ...props }) => {
+  const [isCollapseOpen, setCollapseOpen] = useState(isOpen)
 
   const handleHeaderClick = () => {
-    setCollapseOpen(!isCollapseOpen)
+    if (!isDisabled) {
+      setCollapseOpen(!isCollapseOpen)
+    }
   }
 
   return (
@@ -48,6 +50,7 @@ const Collapse = ({ title, headerProps, children, ...props }) => {
 
 Collapse.propTypes = {
   headerProps: PropTypes.node,
+  isDisabled: PropTypes.bool,
   title: PropTypes.node.isRequired,
   isOpen: PropTypes.bool,
   children: PropTypes.node,
@@ -55,6 +58,7 @@ Collapse.propTypes = {
 
 Collapse.defaultProps = {
   headerProps: undefined,
+  isDisabled: false,
   children: undefined,
   isOpen: false,
 }

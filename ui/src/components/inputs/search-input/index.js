@@ -28,13 +28,13 @@ const Container = styled.div`
 const StyledInput = styled.input`
   box-sizing: border-box;
   padding-left: 32px;
-  border: 1px solid ${props => props.theme.colors.neutralLighter};
+  border: 1px solid ${(props) => props.theme.colors.neutralLighter};
   border-radius: 40px;
   font-size: 14px;
   width: 100%;
   height: 100%;
   :focus {
-    border: 1px solid ${props => props.theme.colors.primary};
+    border: 1px solid ${(props) => props.theme.colors.primary};
   }
   :disabled {
     background: inherit;
@@ -42,7 +42,7 @@ const StyledInput = styled.input`
     border: none;
   }
   :invalid {
-    border: 1px solid ${props => props.theme.colors.danger};
+    border: 1px solid ${(props) => props.theme.colors.danger};
   }
   ${space}
   ${layout}

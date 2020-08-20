@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"io"
 	stdhttp "net/http"
 	"os"
@@ -34,7 +35,7 @@ func NewFileSystemHandlerAdapter(path string, logger log.Logger) *FileSystemHand
 
 	a.RegisterHandlerFunc("GET", "/", a.list)
 	a.RegisterHandlerFunc("POST", "/", a.upload)
-	a.RegisterHandlerFunc("DELETE", "/:path", a.delete)
+	a.RegisterHandlerFunc("DELETE", "/*filepath", a.delete)
 
 	return a
 }
@@ -50,17 +51,16 @@ func (a *FileSystemHandlerAdapter) list(resp http.Response, req *http.Request) (
 			if err != nil {
 				return err
 			}
-
-			if path != a.path {
+			if path != a.path { // Ignore root dir
+				relPath := strings.Replace(path, a.path, "", 1)
 				out.Items = append(out.Items, &structs.GetFileOutput{
-					Path:     strings.Replace(path, a.path, "", 1),
-					Size:     int(info.Size()),
-					IsDir:    info.IsDir(),
-					IsHidden: strings.HasPrefix(info.Name(), "."),
-					ModDate:  info.ModTime(),
+					Path:       relPath,
+					Size:       int(info.Size()),
+					IsDir:      info.IsDir(),
+					ModifiedAt: info.ModTime(),
+					URL:        fmt.Sprintf("static/%s", relPath),
 				})
 			}
-
 			return nil
 		})
 	if err != nil {
@@ -104,7 +104,7 @@ func (a *FileSystemHandlerAdapter) upload(resp http.Response, req *http.Request)
 func (a *FileSystemHandlerAdapter) delete(resp http.Response, req *http.Request) (interface{}, error) {
 
 	in := &structs.DeleteFileInput{
-		Path: req.Params["path"],
+		Path: req.Params["filepath"],
 	}
 
 	err := os.RemoveAll(a.path + "/" + in.Path)

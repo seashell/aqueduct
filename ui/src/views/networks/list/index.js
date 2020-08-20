@@ -45,7 +45,7 @@ const NetworksView = () => {
   const networks = getNetworksQuery.data ? getNetworksQuery.data.result.items : []
 
   const filteredNetworks =
-    isLoading || networks === null ? [] : networks.filter(el => el.ssid.includes(searchString))
+    isLoading || networks === null ? [] : networks.filter((el) => el.ssid.includes(searchString))
 
   return (
     <Container>
@@ -56,18 +56,18 @@ const NetworksView = () => {
         <SearchInput
           width="100%"
           placeholder="Search..."
-          onChange={e => setSearchString(e.target.value)}
+          onChange={(e) => setSearchString(e.target.value)}
         />
       </Box>
       <>
-        {filteredNetworks.map(el => (
+        {filteredNetworks.map((el) => (
           <NetworkCard
             key={el.ssid}
             ssid={el.ssid}
             rssi={el.rssi}
             security={el.security}
             configured={el.isConfigured}
-            onClick={ssid => {
+            onClick={(ssid) => {
               navigate(`/ui/networks/${ssid}/connect`)
             }}
             onForget={() => {}}

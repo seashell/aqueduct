@@ -18,17 +18,17 @@ export const StyledButton = styled.button`
   outline: none;
 
   flex-shrink: 0;
-  width: ${props => props.size};
-  height: ${props => props.size};
+  width: ${(props) => props.size};
+  height: ${(props) => props.size};
 
   svg {
     width: 100%;
     height: auto;
-    fill: ${props =>
+    fill: ${(props) =>
       props.color ? props.theme.colors[props.color] : props.theme.colors.neutralDark};
   }
 
-  ${props =>
+  ${(props) =>
     props.hoverEffect &&
     css`
       :hover {

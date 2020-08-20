@@ -7,13 +7,14 @@ import (
 	http "github.com/seashell/aqueduct/aqueduct/infrastructure/http"
 )
 
+// SPAHandlerAdapter :
 type SPAHandlerAdapter struct {
 	http.BaseHandlerAdapter
 	fsHandler http.HandlerAdapter
 }
 
-// NewFilesystemHandlerAdapter creates a new handler adapter for delivering
-// static files from a filesystem over HTTP
+// NewSPAHandlerAdapter creates a new handler adapter for delivering
+// an SPA bundle over HTTP
 func NewSPAHandlerAdapter(fs stdhttp.FileSystem) http.HandlerAdapter {
 
 	a := &SPAHandlerAdapter{

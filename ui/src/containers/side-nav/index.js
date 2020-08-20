@@ -8,7 +8,7 @@ import { Container, NavLink, CollapsibleSection, CollapsibleSectionTitle } from 
 
 import Brand from './brand'
 
-const SideNav = props => (
+const SideNav = (props) => (
   <Container {...props}>
     <Brand />
     <Box flexDirection="column" pt={3}>
@@ -18,8 +18,8 @@ const SideNav = props => (
         isOpen
       >
         {nav.options
-          .filter(el => !el.devOnly)
-          .map(el => (
+          .filter((el) => !el.devOnly)
+          .map((el) => (
             <NavLink key={el.title} to={el.to}>
               {el.title}
             </NavLink>
@@ -32,8 +32,8 @@ const SideNav = props => (
         isOpen
       >
         {nav.options
-          .filter(el => el.devOnly)
-          .map(el => (
+          .filter((el) => el.devOnly)
+          .map((el) => (
             <NavLink key={el.title} to={el.to}>
               {el.title}
             </NavLink>

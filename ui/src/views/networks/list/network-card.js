@@ -28,18 +28,18 @@ const StyledButton = styled(Button).attrs({
   padding: 0 8px;
   font-size: 14px;
   :hover {
-    box-shadow: ${props => props.theme.shadows.medium};
+    box-shadow: ${(props) => props.theme.shadows.medium};
   }
 `
 
 const NetworkCard = ({ ssid, rssi, security, configured, onClick, onForget }) => {
-  const handleCardClick = e => {
+  const handleCardClick = (e) => {
     e.preventDefault()
     e.stopPropagation()
     onClick(ssid)
   }
 
-  const handleForgetButtonClick = e => {
+  const handleForgetButtonClick = (e) => {
     e.preventDefault()
     e.stopPropagation()
     onForget(ssid)

@@ -17,13 +17,13 @@ export const Container = styled(Box)`
   outline: none;
 
   flex-shrink: 0;
-  width: ${props => props.size};
-  height: ${props => props.size};
+  width: ${(props) => props.size};
+  height: ${(props) => props.size};
 
   svg {
     width: 100%;
     height: auto;
-    ${props =>
+    ${(props) =>
       props.color &&
       css`
         path {

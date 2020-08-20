@@ -84,7 +84,7 @@ const Jellyfish = ({ withFace, size, color, ...props }) => (
             <circle cx="96" cy="40" r="2" />
           </g>
         </g>
-        <svg id="jellyfish" width="50%" x="25" viewBox="0 0 100 100" {...props}>
+        <svg id="jellyfish" width="50%" x="25" viewBox="0 0 100 100">
           <path
             fill={color}
             id="body"
