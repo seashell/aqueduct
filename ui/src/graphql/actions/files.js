@@ -10,6 +10,7 @@ export const GET_FILES = gql`
         isDir
         isHidden
         modifiedAt
+        url
       }
     }
   }

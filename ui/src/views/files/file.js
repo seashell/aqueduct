@@ -12,7 +12,7 @@ const Container = styled(Box)`
   align-items: center;
   cursor: pointer;
   :hover {
-    //background: ${props => props.theme.colors.neutralLighter};
+    //background: ${(props) => props.theme.colors.neutralLighter};
   }
 `
 
@@ -22,28 +22,39 @@ const SelectionIndicator = styled(Box)`
   border-radius: 12px;
   align-items: center;
   justify-content: center;
-  border: 1px solid ${props => props.theme.colors.neutral};
-  display: ${props => (props.isSelecting ? 'flex' : 'none')};
+  border: 1px solid ${(props) => props.theme.colors.neutral};
+  display: ${(props) => (props.isSelecting ? 'flex' : 'none')};
   :before {
     content: '';
     width: 12px;
     height: 12px;
     border-radius: 6px;
-    background: ${props => props.theme.colors.primary};
-    display: ${props => (props.isSelected ? 'block' : 'none')};
+    background: ${(props) => props.theme.colors.primary};
+    display: ${(props) => (props.isSelected ? 'block' : 'none')};
   }
 `
 
 // eslint-disable-next-line react/prop-types
-const File = ({ name, path, isDir, isSelected, isSelecting, onClick }) => {
+const File = ({ name, isDir, isSelected, isSelecting, onSelect, onClick }) => {
   const handleClick = () => {
     onClick()
   }
+  const handleSelect = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onSelect()
+  }
+
   return (
-    <Container onClick={handleClick}>
-      <SelectionIndicator mr={2} isSelected={isSelected} isSelecting={isSelecting} />
+    <Container>
+      <SelectionIndicator
+        mr={2}
+        isSelected={isSelected}
+        isSelecting={isSelecting}
+        onClick={handleSelect}
+      />
       <Icon icon={isDir ? <icons.Folder /> : <icons.File />} size="20px" />
-      <Text textStyle="body" ml={2}>
+      <Text textStyle="body" ml={2} onClick={handleClick}>
         {name}
       </Text>
     </Container>

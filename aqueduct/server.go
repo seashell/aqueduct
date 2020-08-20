@@ -81,11 +81,12 @@ func (s *Server) setupHTTPServer() error {
 		Logger:      s.logger,
 		BindAddress: fmt.Sprintf("%s:%d", s.config.BindAddr, s.config.Ports.HTTP),
 		Handlers: map[string]http.HandlerAdapter{
-			"/api/healthcheck/": handler.NewHealthcheckHandlerAdapter(s.logger),
-			"/api/filesystem/":  handler.NewFileSystemHandlerAdapter(s.config.DataDir, s.logger),
-			"/api/networks/":    handler.NewNetworkHandlerAdapter(s.services.networks, s.logger),
-			"/api/system/":      handler.NewSystemHandlerAdapter(s.services.system, s.logger),
-			"/ws/console/":      handler.NewConsoleHandlerAdapter(s.logger),
+			"/static/":         handler.NewStaticHandlerAdapter(s.config.DataDir),
+			"/healthcheck/":    handler.NewHealthcheckHandlerAdapter(s.logger),
+			"/api/filesystem/": handler.NewFileSystemHandlerAdapter(s.config.DataDir, s.logger),
+			"/api/networks/":   handler.NewNetworkHandlerAdapter(s.services.networks, s.logger),
+			"/api/system/":     handler.NewSystemHandlerAdapter(s.services.system, s.logger),
+			"/ws/console/":     handler.NewConsoleHandlerAdapter(s.logger),
 		},
 	}
 

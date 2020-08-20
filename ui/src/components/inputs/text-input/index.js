@@ -4,7 +4,7 @@ import { space, layout, border } from 'styled-system'
 const TextInput = styled.input`
   box-sizing: border-box;
   padding: 14px 24.8px 14px 13.6px;
-  border: 1px solid ${props => props.theme.colors.neutralLighter};
+  border: 1px solid ${(props) => props.theme.colors.neutralLighter};
   border-radius: 2px;
 
   font-family: Lato;
@@ -12,14 +12,14 @@ const TextInput = styled.input`
 
   width: 100%;
   :focus {
-    border: 1px solid ${props => props.theme.colors.primary};
+    border: 1px solid ${(props) => props.theme.colors.primary};
   }
   :disabled {
     background: rgb(242,242,242);
     cursor: not-allowed;
   }
   :invalid {
-    border: 1px solid ${props => props.theme.colors.danger};
+    border: 1px solid ${(props) => props.theme.colors.danger};
   }
   ${border}
   ${space}

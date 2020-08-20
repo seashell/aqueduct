@@ -43,7 +43,7 @@ const ConfirmationDialogProvider = ({ children }) => {
     <>
       <ConfirmationDialogContext.Provider
         value={{
-          confirm: opts => {
+          confirm: (opts) => {
             setOptions(defaultOptions)
             if (typeof opts === 'object' && opts !== null) {
               const merged = Object.assign(options, opts)

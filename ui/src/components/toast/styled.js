@@ -27,7 +27,7 @@ export const ToastBody = styled.div`
 `
 
 export const ToastContent = styled.p`
-  color: ${props => props.theme.neutralLight};
+  color: ${(props) => props.theme.neutralLight};
 `
 
 export const CloseIcon = styled(IconButton)`

@@ -22,14 +22,14 @@ const StyledLink = styled(Link)`
   color: inherit;
   
   :hover {
-    ${props => props.hoverStyle}
+    ${(props) => props.hoverStyle}
   }
 
   &[aria-current] {
-    ${props => props.activeStyle}
+    ${(props) => props.activeStyle}
   }
 
-  ${props =>
+  ${(props) =>
     props.disabled &&
     css`
       pointer-events: none;

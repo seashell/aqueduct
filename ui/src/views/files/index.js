@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useDropzone } from 'react-dropzone'
 import { Portal } from 'react-portal'
+import * as _ from 'lodash'
 
-import { useQuery, useMutation } from '@apollo/client'
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
 import { GET_FILES, UPLOAD_FILE, DELETE_FILE } from '_graphql/actions/files'
 import { useLocation } from '@reach/router'
 
@@ -15,25 +16,16 @@ import Box from '_components/box'
 import Text from '_components/text'
 import Icon from '_components/icon'
 import Button from '_components/button'
-import Collapse from '_components/collapse'
 import SearchInput from '_components/inputs/search-input'
 import { Bars as Spinner } from '_components/spinner'
 
-import File from './file'
+import Tree from './tree'
 
 const Container = styled(Box)`
   flex-direction: column;
 `
 
-const FileManagerHeader = styled(Box)`
-  justify-content: flex-end;
-`
-
-const StyledCollapse = styled(Collapse)`
-  padding-left: 16px;
-`
-
-const UploadButton = props => (
+const UploadButton = (props) => (
   <Button
     variant="primary"
     display="flex"
@@ -49,29 +41,57 @@ const UploadButton = props => (
   </Button>
 )
 
+const buildTree = (nodes) =>
+  nodes.reduce((t, node) => {
+    let tnode = t
+    node.path.split('/').forEach((el) => {
+      if (!tnode[el]) {
+        tnode[el] = {}
+      }
+      tnode = tnode[el]
+    })
+    tnode.path = node.path
+    tnode.attrs = {
+      name: node.path.split('/').pop(),
+      isDir: node.isDir,
+      size: node.size,
+      url: node.url,
+      isSelected: node.isSelected || false,
+    }
+    return t
+  }, {})
+
 const FilesView = () => {
   const location = useLocation()
 
-  const [selectedFiles, setSelectedFiles] = useState(null)
+  const [nodes, setNodes] = useState([])
+  const [isSelecting, setIsSelecting] = useState(false)
   const [searchString, setSearchString] = useState('')
 
   const getFilesQuery = useQuery(GET_FILES, {
     variables: {},
+    onCompleted: (data) => {
+      setNodes(data.result.items)
+    },
   })
 
-  const [deleteFile, deleteFileMutation] = useMutation(DELETE_FILE, {
+  const [deleteFile] = useMutation(DELETE_FILE, {
     onCompleted: () => {
-      getFilesQuery.refetch()
+      getFilesQuery.refetch().then((res) => {
+        setNodes(res.data.result.items)
+      })
     },
     onError: () => {
       toast.error('Error deleting files')
     },
   })
 
-  const [uploadFile, uploadFileMutation] = useMutation(UPLOAD_FILE, {
+  const [uploadFile] = useMutation(UPLOAD_FILE, {
     onCompleted: () => {
       toast.success('Success uploading files')
-      getFilesQuery.refetch()
+      getFilesQuery.refetch().then((res) => {
+        setNodes(res.data.result.items)
+      })
     },
     onError: () => {
       toast.error('Error uploading files')
@@ -81,42 +101,70 @@ const FilesView = () => {
   const { getRootProps, getInputProps, open: openFileDialog, isDragActive } = useDropzone({
     noClick: true,
     noKeyboard: true,
-    onDrop: files => {
+    onDrop: (files) => {
       uploadFile({ variables: { input: files } })
     },
   })
 
   useEffect(() => {
-    getFilesQuery.refetch()
+    getFilesQuery.refetch().then((res) => {
+      setNodes(res.data.result.items)
+    })
   }, [location])
 
   const handleToggleSelectionButtonClick = () => {
-    if (selectedFiles === null) {
-      setSelectedFiles([])
-    } else {
-      setSelectedFiles(null)
+    if (!isSelecting) {
+      const updated = nodes.map((n) => {
+        n.isSelected = false
+        return n
+      })
+      setNodes(updated)
+    }
+    setIsSelecting(!isSelecting)
+  }
+
+  const handleTreeNodeClick = (path) => {
+    const node = nodes.find((n) => n.path === path)
+    if (!node.isDir && !isSelecting) {
+      // TODO: replace this with URL in the files returned from the API
+      const url = `http://${window.location.hostname}:9090/static/${node.path}`
+      window.open(url, '_blank')
     }
   }
 
-  const handleFileClicked = filename => {
-    if (selectedFiles !== null) {
-      const idx = selectedFiles.indexOf(filename)
-      if (idx === -1) {
-        setSelectedFiles(selectedFiles.concat(filename))
-      } else {
-        setSelectedFiles(selectedFiles.filter(el => el !== filename))
-      }
-    } else {
-      window.open(`/files/${filename}`, '_blank')
+  const handleTreeNodeSelect = (path) => {
+    if (isSelecting) {
+      const updated = nodes.map((n) => {
+        if (n.path === path) {
+          n.isSelected = true
+        }
+        return n
+      })
+      setNodes(updated)
+    }
+  }
+
+  const handleTreeNodeDeselect = (path) => {
+    if (isSelecting) {
+      const updated = nodes.map((n) => {
+        if (n.path === path) {
+          n.isSelected = false
+        }
+        return n
+      })
+      setNodes(updated)
     }
   }
 
   const handlDeleteFilesButtonClick = () => {
-    if (selectedFiles !== null) {
-      selectedFiles.forEach(path => {
-        deleteFile({ variables: { path } })
-      })
-    }
+    nodes.forEach((node) => {
+      if (node.isSelected) {
+        deleteFile({ variables: { path: node.path } }).then(() => {
+          console.log('deleted')
+        })
+      }
+    })
+    setIsSelecting(false)
   }
 
   const handleUploadButtonClick = () => {
@@ -129,70 +177,11 @@ const FilesView = () => {
     return <Spinner />
   }
 
-  const files = getFilesQuery.data ? getFilesQuery.data.result.items : []
+  const filteredNodes = nodes
+    .sort((el) => (el.isDir ? -1 : 1))
+    .filter((el) => el.path.includes(searchString))
 
-  const filteredFiles = files
-    .sort(el => (el.isDir ? -1 : 1))
-    .filter(el => el.path.includes(searchString))
-
-  const tree = filteredFiles.reduce((t, file) => {
-    let node = t
-    file.path.split('/').forEach(el => {
-      if (!node[el]) {
-        node[el] = {}
-      }
-      node = node[el]
-    })
-    node.path = file.path
-    node.attrs = {
-      name: file.path.split('/').pop(),
-      isDir: file.isDir,
-      size: file.size,
-    }
-    return t
-  }, {})
-
-  // eslint-disable-next-line no-shadow
-  const renderTree = tree => {
-    const keys = Object.keys(tree)
-    const sortedKeys = keys.sort(k => {
-      if (k === 'attrs' || k === 'path') return 0
-      if (tree[k].attrs.isDir) {
-        return -1
-      }
-      return 1
-    })
-
-    return sortedKeys.map(key => {
-      if (key === 'attrs' || key === 'path') return false
-      const node = tree[key]
-      return node.attrs.isDir ? (
-        <StyledCollapse
-          title={
-            <File
-              path={node.path}
-              name={node.attrs.name}
-              isDir={node.attrs.isDir}
-              isSelected={selectedFiles !== null && selectedFiles.indexOf(node.path) !== -1}
-              isSelecting={selectedFiles !== null}
-              onClick={() => {}}
-            />
-          }
-        >
-          {renderTree(node)}
-        </StyledCollapse>
-      ) : (
-        <File
-          path={node.path}
-          name={node.attrs.name}
-          isDir={node.attrs.isDir}
-          isSelected={selectedFiles !== null && selectedFiles.indexOf(node.path) !== -1}
-          isSelecting={selectedFiles !== null}
-          onClick={() => handleFileClicked(node.path)}
-        />
-      )
-    })
-  }
+  const tree = buildTree(filteredNodes)
 
   return (
     <Container>
@@ -208,7 +197,7 @@ const FilesView = () => {
         <SearchInput
           width="100%"
           placeholder="Search..."
-          onChange={e => setSearchString(e.target.value)}
+          onChange={(e) => setSearchString(e.target.value)}
         />
         <Button
           variant="primaryInverted"
@@ -217,9 +206,9 @@ const FilesView = () => {
           ml={2}
           onClick={handleToggleSelectionButtonClick}
         >
-          {selectedFiles === null ? 'Select' : 'Cancel'}
+          {isSelecting ? 'Cancel' : 'Select'}
         </Button>
-        {selectedFiles != null && (
+        {isSelecting && (
           <Button
             variant="danger"
             height="42px"
@@ -238,7 +227,13 @@ const FilesView = () => {
         height="60vh"
       >
         <input {...getInputProps()} />
-        {renderTree(tree)}
+        <Tree
+          nodes={tree}
+          isSelecting={isSelecting}
+          onNodeClick={handleTreeNodeClick}
+          onNodeSelect={handleTreeNodeSelect}
+          onNodeDeselect={handleTreeNodeDeselect}
+        />
       </Box>
     </Container>
   )

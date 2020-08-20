@@ -29,9 +29,7 @@ const ConnectionSetupView = ({ ssid }) => {
       password: '',
     },
     validationSchema: Yup.object().shape({
-      ssid: Yup.string()
-        .required()
-        .nullable(),
+      ssid: Yup.string().required().nullable(),
       password: Yup.string().required(),
     }),
   })
@@ -41,7 +39,7 @@ const ConnectionSetupView = ({ ssid }) => {
   })
 
   const handleSaveButtonClick = () => {
-    formik.validateForm().then(errors => {
+    formik.validateForm().then((errors) => {
       if (_.isEmpty(errors)) {
         confirm({
           title: 'Confirm this operation',

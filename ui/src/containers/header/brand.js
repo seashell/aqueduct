@@ -23,7 +23,7 @@ const StyledLink = styled(Link)`
   ${colorStyle}
 `
 
-const Brand = props => (
+const Brand = (props) => (
   <StyledLink to="/">
     <Logo width={40} height={40} {...props} />
   </StyledLink>

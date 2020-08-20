@@ -19,7 +19,7 @@ export const Container = styled.div`
 height: 72px;
 position: fixed;
 box-sizing: border-box;
-border-bottom: 1px solid ${props => props.theme.colors.neutralLighter};
+border-bottom: 1px solid ${(props) => props.theme.colors.neutralLighter};
 
 top: 0;
 right: 0;
@@ -109,7 +109,7 @@ const MobileMenu = styled(Box)`
   }
 `
 
-const Header = props => {
+const Header = (props) => {
   const searchInputRef = useRef(null)
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -164,7 +164,7 @@ const Header = props => {
             </Button>
           </Box>
           <Box flexDirection="column" mt={3}>
-            {nav.options.map(el => (
+            {nav.options.map((el) => (
               <Nav key={el.title} to={el.to}>
                 {el.title}
               </Nav>

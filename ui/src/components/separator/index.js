@@ -3,7 +3,7 @@ import { layout, space, color } from 'styled-system'
 import PropTypes from 'prop-types'
 
 const Separator = styled.span`
-  ${props =>
+  ${(props) =>
     props.vertical
       ? css`
           width: 1px;
