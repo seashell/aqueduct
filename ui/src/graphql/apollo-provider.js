@@ -56,8 +56,9 @@ export const CustomApolloProvider = ({ children }) => {
 
   const dedupLink = new DedupLink()
 
+  const composeUrl = (url, protocol) => `${protocol}://${url}`
+
   const restLink = new RestLink({
-    uri: REST_API_URL,
     bodySerializers: {
       fileEncode: (data, headers) => {
         const formData = new FormData()
@@ -68,6 +69,7 @@ export const CustomApolloProvider = ({ children }) => {
         return { body: formData, headers }
       },
     },
+    uri: composeUrl(REST_API_URL || `${window.location.host}/api/`, 'http'),
   })
 
   const cache = new InMemoryCache()

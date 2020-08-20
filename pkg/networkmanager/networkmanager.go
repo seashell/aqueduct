@@ -20,18 +20,24 @@ type AccessPoint struct {
 	RSSI int
 }
 
-type ipv4Address struct {
-	address string
-	prefix  uint32
+type Connection struct {
+	SSID string
+	Password string
 }
+
+type Hotspot struct {
+	Enabled 	bool
+	SSID		string
+	Mode		string
+	Password string
+	GatewayAddress string
+}
+
 
 const (
 	defaultTimeout                     = 10
 	dbusSignalInterfaceMatchingPattern = "org.freedesktop.DBus.Properties"
 	dbusSignalMemberMatchingPattern    = "PropertiesChanged"
-	accessPointSSID                    = "aqueduct-ap"
-	accessPointPassword                = "admin123"
-	accessPointGatewayAddress          = "192.168.42.1"
 )
 
 // TODO: move
@@ -49,7 +55,7 @@ func inet_aton(ip string) uint32 {
 	return binary.LittleEndian.Uint32(net.ParseIP(ip).To4())
 }
 
-// TODO: rename
+// waitLastScan
 func waitLastScan(device gonetworkmanager.DeviceWireless, path dbus.ObjectPath, timeout int) ([]*AccessPoint, error) {
 
 	if timeout == 0 {
@@ -91,7 +97,9 @@ func waitLastScan(device gonetworkmanager.DeviceWireless, path dbus.ObjectPath, 
 					}
 
 					accessPoints := []*AccessPoint{}
+					//TODO: remove duplicates
 					for _, ap := range aps {
+						
 						ssid, err := ap.GetPropertySSID()
 						if err != nil {
 							return nil, err
@@ -111,7 +119,49 @@ func waitLastScan(device gonetworkmanager.DeviceWireless, path dbus.ObjectPath, 
 	}
 }
 
-// NewNetworkManager :
+// waitACtiveConnection
+func waitACtiveConnection(device gonetworkmanager.DeviceWireless, path dbus.ObjectPath, timeout int) (error) {
+
+	if timeout == 0 {
+		timeout = defaultTimeout
+	}
+
+	dconn, err := dbus.SystemBus()
+	if err != nil {
+		return err
+	}
+
+	channel := make(chan *dbus.Signal, 1)
+	dconn.Signal(channel)
+
+	err = dconn.AddMatchSignal(
+		dbus.WithMatchInterface(dbusSignalInterfaceMatchingPattern),
+		dbus.WithMatchMember(dbusSignalMemberMatchingPattern),
+		dbus.WithMatchObjectPath(path),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	for {
+		select {
+		case <-time.After(time.Duration(timeout) * time.Second):
+			return errors.New("reached timeout while waiting for signal")
+		case sig := <-channel:
+
+			changedProps := sig.Body[1].(map[string]dbus.Variant)
+
+			for key, _ := range changedProps {
+				if key == "ActiveAccessPoint" {
+					return nil
+				}
+			}
+		}
+	}
+}
+
+// NewNetworkManager
 func NewNetworkManager() (*NetworkManager, error) {
 
 	nm, err := gonetworkmanager.NewNetworkManager()
@@ -136,7 +186,7 @@ func NewNetworkManager() (*NetworkManager, error) {
 			if err != nil {
 				return nil, err
 			}
-
+			
 			return &NetworkManager{
 				networkManager: &nm,
 				deviceWireless: &dw,
@@ -146,7 +196,7 @@ func NewNetworkManager() (*NetworkManager, error) {
 	return nil, err
 }
 
-// GetAccessPoints :
+// GetAccessPoints
 func (n *NetworkManager) GetAccessPoints() ([]*AccessPoint, error) {
 	err := (*n.deviceWireless).RequestScan()
 	if err != nil {
@@ -155,31 +205,103 @@ func (n *NetworkManager) GetAccessPoints() ([]*AccessPoint, error) {
 	return waitLastScan(*n.deviceWireless, (*n.deviceWireless).GetPath(), 10)
 }
 
-// StartAccessPoint :
-func (n *NetworkManager) StartAccessPoint() error {
+// AddConnection
+func (n *NetworkManager) AddConnection(c *Connection) (error) {
+	conn := gonetworkmanager.ConnectionSettings{}
+
+	conn["connection"] = make(map[string]interface{})
+	conn["connection"]["id"] = c.SSID
+	conn["connection"]["type"] = "802-11-wireless"
+
+	conn["802-11-wireless"] = make(map[string]interface{})
+	conn["802-11-wireless"]["mode"] = "infrastructure"
+	conn["802-11-wireless"]["ssid"] = []byte(c.SSID)
+
+
+	if c.Password != "" {
+		conn["802-11-wireless"]["security"] = "802-11-wireless-security"
+		conn["802-11-wireless-security"] = make(map[string]interface{})
+		conn["802-11-wireless-security"]["key-mgmt"] = "wpa-psk"
+		conn["802-11-wireless-security"]["psk"] = c.Password
+	}
+
+	conn["ipv4"] = make(map[string]interface{})
+	conn["ipv4"]["method"] = "auto"
+
+	conn["ipv6"] = make(map[string]interface{})
+	conn["ipv6"]["method"] = "auto"
+
+	conn["proxy"] = make(map[string]interface{})
+
+	nms, err := gonetworkmanager.NewSettings()
+	if err != nil {
+		return err
+	}
+
+	_, err =	nms.AddConnection(conn)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// RemoveConnection
+func (n *NetworkManager) RemoveConnection(ssid string) (error) {
+	nms, err := gonetworkmanager.NewSettings()
+
+	connections,err := nms.ListConnections() 
+	if err != nil {
+		return err
+	}
+
+	for _,conn := range connections {
+
+		settings,err := conn.GetSettings()
+		if err != nil {
+			return err
+		}
+
+		if settings["connection"]["id"] == ssid {
+			err = conn.Delete()
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+// StartHotspot
+func (n *NetworkManager) StartHotspot(h *Hotspot) error {
 
 	conn := gonetworkmanager.ConnectionSettings{}
 
 	conn["connection"] = make(map[string]interface{})
-	conn["connection"]["id"] = accessPointSSID
+	conn["connection"]["id"] = h.SSID
 	conn["connection"]["type"] = "802-11-wireless"
 	conn["connection"]["autoconnect"] = false
 
 	conn["802-11-wireless"] = make(map[string]interface{})
-	conn["802-11-wireless"]["mode"] = "ap"
-	conn["802-11-wireless"]["ssid"] = []byte(accessPointSSID)
-	conn["802-11-wireless"]["security"] = "802-11-wireless-security"
+	conn["802-11-wireless"]["mode"] = h.Mode
+	conn["802-11-wireless"]["ssid"] = []byte(h.SSID)
 
-	conn["802-11-wireless-security"] = make(map[string]interface{})
-	conn["802-11-wireless-security"]["key-mgmt"] = "wpa-psk"
-	conn["802-11-wireless-security"]["psk"] = accessPointPassword
 
-	addressData := []uint32{inet_aton(accessPointGatewayAddress), uint32(24), inet_aton(accessPointGatewayAddress)}
+	if h.Password != "" {
+		conn["802-11-wireless"]["security"] = "802-11-wireless-security"
+		conn["802-11-wireless-security"] = make(map[string]interface{})
+		conn["802-11-wireless-security"]["key-mgmt"] = "wpa-psk"
+		conn["802-11-wireless-security"]["psk"] = h.Password
+	}
+
+
+	addressData := []uint32{inet_aton(h.GatewayAddress), uint32(24), inet_aton(h.GatewayAddress)}
 	addresses := [][]uint32{addressData}
 
 	conn["ipv4"] = make(map[string]interface{})
 	conn["ipv4"]["addresses"] = addresses
-	conn["ipv4"]["method"] = "manual"
+	conn["ipv4"]["method"] = "shared"
 
 	conn["ipv6"] = make(map[string]interface{})
 	conn["ipv6"]["method"] = "ignore"
@@ -190,30 +312,17 @@ func (n *NetworkManager) StartAccessPoint() error {
 	if err != nil {
 		return err
 	}
-	return nil
+
+	return waitACtiveConnection(*n.deviceWireless, (*n.deviceWireless).GetPath(), 10)
 }
 
-// StoptAccessPoint :
-func (n *NetworkManager) StopAccessPoint() error {
-	activeConn, err := (*n.deviceWireless).GetPropertyActiveConnection()
+// StopHotSpot
+func (n *NetworkManager) StopHotspot(ssid string) error {
+	
+	err := n.RemoveConnection(ssid)
 	if err != nil {
 		return err
 	}
-
-	err = (*n.networkManager).DeactivateConnection(activeConn)
-	if err != nil {
-		return err
-	}
-
-	conn, err := activeConn.GetPropertyConnection()
-	if err != nil {
-		return err
-	}
-
-	err = conn.Delete()
-	if err != nil {
-		return err
-	}
-
+	
 	return nil
 }

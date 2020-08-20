@@ -41,7 +41,7 @@ func (c *AgentCommand) Run(ctx context.Context, args []string) int {
 		return 1
 	}
 
-	_, err = aqueduct.NewServer(config)
+	server, err := aqueduct.NewServer(config)
 	if err != nil {
 		c.UI.Error("==> " + "Error initializing agent: " + err.Error() + "\n")
 		return 1
@@ -49,12 +49,13 @@ func (c *AgentCommand) Run(ctx context.Context, args []string) int {
 
 	defer func() {
 		logger.Debugf("Shutting down aqueduct agent...")
-		// server.Shutdown()
+		server.Shutdown()
 	}()
 
 	c.printConfig(config)
 
 	c.UI.Output("==> Aqueduct agent started! Log data will stream in below:\n")
+
 
 	return c.handleSignals()
 }
@@ -70,7 +71,10 @@ func (c *AgentCommand) parseConfig(args []string) *aqueduct.Config {
 		c.UI.Output(c.Help())
 	}
 
-	cmdConfig := aqueduct.Config{}
+	cmdConfig := &aqueduct.Config{
+		Ports: &aqueduct.Ports{},
+		Hotspot: &aqueduct.Hotspot{},
+	}
 
 	// General options
 	flags.StringVar(&configPath, "config", "", "")
@@ -78,12 +82,23 @@ func (c *AgentCommand) parseConfig(args []string) *aqueduct.Config {
 	flags.StringVar(&cmdConfig.DataDir, "data-dir", "", "")
 	flags.StringVar(&cmdConfig.LogLevel, "log-level", "", "")
 
+	// Agent options
+	flags.IntVar(&cmdConfig.Ports.HTTP, "http-port", 0, "")
+	flags.BoolVar(&cmdConfig.Hotspot.Enabled, "enable-hotspot", false, "")
+	flags.StringVar(&cmdConfig.Hotspot.SSID, "hotspot-ssid", "", "")
+	flags.StringVar(&cmdConfig.Hotspot.Password, "hotspot-password", "", "")
+
 	if err := flags.Parse(args); err != nil {
 		c.UI.Error("==> Error: " + err.Error() + "\n")
 		return nil
 	}
 
 	config := aqueduct.DefaultConfig()
+
+	config = config.Merge(cmdConfig)
+	if !config.IsValid() {
+		return nil
+	}
 
 	return config
 }
@@ -153,7 +168,25 @@ General Options:
   -log-level=<level>
     Specify the verbosity level of Aqueduct's logs. Valid values include
     DEBUG, INFO, WARN, ERROR, and FATAL in decreasing order of verbosity.
-    The	default is INFO.
+	 The	default is INFO.
+	
+Agent Options:
+	-http-port=<port>
+	 The port where the agent will serve both it's UI and HTTP API. 
+	 Defaults to 9090.
+
+	-enable-hotspot
+	 Specify if the agent should start a hotspot connection. 
+	 Defaults to false.
+
+	-hotspot-ssid=<name>
+	 Specify the hotspot name, in case the agent is configured to 
+	 start a hotspot connection. Defaults to "aqueduct-ap".
+
+	-hotspot-password=<password>
+	 Specify the hotspot password, in case the agent is configured to 
+	 start a hotspot connection. Defaults to an empty password.
+
 
 `
 	return strings.TrimSpace(h)
