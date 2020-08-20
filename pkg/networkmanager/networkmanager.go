@@ -67,8 +67,6 @@ func waitLastScan(device gonetworkmanager.DeviceWireless, path dbus.ObjectPath, 
 		return nil, err
 	}
 
-	defer dconn.Close()
-
 	channel := make(chan *dbus.Signal, 1)
 	dconn.Signal(channel)
 
@@ -132,8 +130,6 @@ func waitACtiveConnection(device gonetworkmanager.DeviceWireless, path dbus.Obje
 	if err != nil {
 		return err
 	}
-
-	defer dconn.Close()
 
 	channel := make(chan *dbus.Signal, 1)
 	dconn.Signal(channel)
