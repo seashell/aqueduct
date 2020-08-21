@@ -249,7 +249,33 @@ func (n *NetworkManager) StartHotspot(h *Hotspot) error {
 
 // StopHotspot :
 func (n *NetworkManager) StopHotspot(ssid string) error {
-	//TODO
+	active, err := (*n.deviceWireless).GetPropertyActiveConnection()
+	if err != nil {
+		return err
+	}
+
+	activeID, err := active.GetPropertyID()
+	if err != nil {
+		return err
+	}
+
+	if activeID == ssid {
+
+		conn, err := active.GetPropertyConnection()
+		if err != nil {
+			return err
+		}
+
+		if err := (*n.networkManager).DeactivateConnection(active); err != nil {
+			return err
+		}
+
+		if err := conn.Delete(); err != nil {
+			return err
+		}
+
+	}
+
 	return nil
 }
 
@@ -328,7 +354,7 @@ func (n *NetworkManager) removeConnectionByName(ssid string) error {
 			return err
 		}
 
-		if s["connection"]["id"] == "c.SSID" {
+		if s["connection"]["id"] == ssid {
 			return conn.Delete()
 		}
 	}

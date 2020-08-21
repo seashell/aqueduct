@@ -12,7 +12,8 @@ import (
 type NetworkManager struct {
 	conn *networkmanager.NetworkManager
 
-	cache *Cache
+	HotspotSSID string
+	cache       *Cache
 }
 
 // Hotspot :
@@ -34,7 +35,9 @@ func NewNetworkManager() (*NetworkManager, error) {
 
 	cache := NewCache()
 
-	return &NetworkManager{conn, cache}, nil
+	HotspotSSID := ""
+
+	return &NetworkManager{conn, HotspotSSID, cache}, nil
 }
 
 // ListAccessPoints :
@@ -70,6 +73,7 @@ func (c *NetworkManager) UpsertConnection(conn *application.Connection) error {
 	}
 
 	go func() {
+		c.StopHotspot()
 		time.Sleep(5 * time.Second)
 		system.Reboot()
 	}()
@@ -99,6 +103,9 @@ func (c *NetworkManager) PopulateCache() error {
 
 // StartHotspot :
 func (c *NetworkManager) StartHotspot(h *Hotspot) error {
+
+	c.HotspotSSID = h.SSID
+
 	err := c.conn.StartHotspot(&networkmanager.Hotspot{
 		SSID:           h.SSID,
 		Mode:           h.Mode,
@@ -112,6 +119,10 @@ func (c *NetworkManager) StartHotspot(h *Hotspot) error {
 }
 
 // StopHotspot :
-func (c *NetworkManager) StopHotspot(ssid string) error {
-	return c.conn.StopHotspot(ssid)
+func (c *NetworkManager) StopHotspot() error {
+	if c.HotspotSSID != "" {
+		return c.conn.StopHotspot(c.HotspotSSID)
+	}
+
+	return nil
 }
