@@ -27,8 +27,8 @@ build/linux_amd64/aqueduct: CMD='CGO_ENABLED=$(CGO_ENABLED) GOOS=linux GOARCH=am
 build/linux_amd64/aqueduct: $(SOURCE_FILES) ## Build aqueduct for linux/amd64
 	@eval ${CMD}
 
-build/linux_arm64/aqueduct: CMD='CGO_ENABLED=$(CGO_ENABLED) GOOS=linux GOARCH=amd64 \
-								go build ./cmd/main.go \
+build/linux_arm64/aqueduct: CMD='CGO_ENABLED=$(CGO_ENABLED) GOOS=linux GOARCH=arm64 \
+								go build \
 								-trimpath \
 								-ldflags $(GO_LDFLAGS) \
 								-o "$@" '							
