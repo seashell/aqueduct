@@ -1,7 +1,6 @@
 package http
 
 import (
-	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -27,7 +26,7 @@ func NewServer(config *ServerConfig) (*Server, error) {
 
 	listener, err := net.Listen("tcp", config.BindAddress)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("error starting HTTP listener: %v", err))
+		return nil, fmt.Errorf("error starting HTTP listener: %v", err)
 	}
 
 	server := &Server{

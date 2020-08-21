@@ -10,20 +10,24 @@ import (
 	log "github.com/seashell/aqueduct/pkg/log"
 )
 
+// LoggingResponseWriter :
 type LoggingResponseWriter struct {
 	http.ResponseWriter
 	code int
 }
 
+// NewLoggingResponseWriter :
 func NewLoggingResponseWriter(rw http.ResponseWriter) *LoggingResponseWriter {
 	return &LoggingResponseWriter{rw, http.StatusOK}
 }
 
+// WriteHeader :
 func (lrw *LoggingResponseWriter) WriteHeader(code int) {
 	lrw.code = code
 	lrw.ResponseWriter.WriteHeader(code)
 }
 
+// Hijack :
 func (lrw *LoggingResponseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
 	h, ok := lrw.ResponseWriter.(http.Hijacker)
 	if !ok {
@@ -32,7 +36,7 @@ func (lrw *LoggingResponseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) 
 	return h.Hijack()
 }
 
-// WithLogging
+// WithLogging :
 func WithLogging(next http.HandlerFunc, logger log.Logger) http.HandlerFunc {
 
 	return func(rw http.ResponseWriter, req *http.Request) {

@@ -13,6 +13,7 @@ import (
 	log "github.com/seashell/aqueduct/pkg/log"
 )
 
+// FileSystemHandlerAdapter :
 type FileSystemHandlerAdapter struct {
 	http.BaseHandlerAdapter
 	path      string
@@ -20,9 +21,11 @@ type FileSystemHandlerAdapter struct {
 	logger    log.Logger
 }
 
+// FileSystemManager :
 type FileSystemManager interface {
 }
 
+// NewFileSystemHandlerAdapter :
 func NewFileSystemHandlerAdapter(path string, logger log.Logger) *FileSystemHandlerAdapter {
 
 	fs := stdhttp.Dir(path)

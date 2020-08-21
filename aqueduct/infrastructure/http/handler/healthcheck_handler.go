@@ -5,11 +5,13 @@ import (
 	log "github.com/seashell/aqueduct/pkg/log"
 )
 
+// HealthcheckHandlerAdapter :
 type HealthcheckHandlerAdapter struct {
 	http.BaseHandlerAdapter
 	logger log.Logger
 }
 
+// NewHealthcheckHandlerAdapter :
 func NewHealthcheckHandlerAdapter(logger log.Logger) *HealthcheckHandlerAdapter {
 
 	a := &HealthcheckHandlerAdapter{}

@@ -17,16 +17,19 @@ import (
 // See https://github.com/GoogleCloudPlatform/kubernetes
 var connectionUpgradeRegex = regexp.MustCompile("(^|.*,\\s*)upgrade($|\\s*,)")
 
+// WebsocketSession :
 type WebsocketSession struct {
 	conn *websocket.Conn
 }
 
+// ConsoleHandlerAdapter :
 type ConsoleHandlerAdapter struct {
 	http.BaseHandlerAdapter
 	sessions map[string]*websocket.Conn
 	logger   log.Logger
 }
 
+// NewConsoleHandlerAdapter :
 func NewConsoleHandlerAdapter(logger log.Logger) http.HandlerAdapter {
 	a := &ConsoleHandlerAdapter{}
 	a.logger = logger
@@ -52,7 +55,7 @@ func (a *ConsoleHandlerAdapter) handleHTTP(rw stdhttp.ResponseWriter, req *stdht
 
 func (a *ConsoleHandlerAdapter) handleWS(conn *websocket.Conn) {
 
-	cmd := exec.Command("sh")
+	cmd := exec.Command("nsenter", "-t", "1", "-m", "-u", "-n", "-i", "bash")
 
 	f, err := pty.Start(cmd)
 	if err != nil {
