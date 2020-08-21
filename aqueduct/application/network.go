@@ -18,9 +18,16 @@ type AccessPoint interface {
 	IsConfigured() bool
 }
 
+// Connection :
+type Connection struct {
+	SSID     string
+	Password string
+}
+
 // NetworkManager :
 type NetworkManager interface {
 	ListAccessPoints() ([]AccessPoint, error)
+	UpsertConnection(*Connection) error
 }
 
 type networkService struct {
@@ -58,6 +65,13 @@ func (s *networkService) Configure(in *structs.ConfigureNetworkInput) (*structs.
 
 	// TODO: call network configuration in the injected infrastructure object
 
+	err := s.nm.UpsertConnection(&Connection{
+		SSID:     *in.SSID,
+		Password: *in.Password,
+	})
+	if err != nil {
+		return nil, err
+	}
 	return &structs.ConfigureNetworkOutput{}, nil
 }
 

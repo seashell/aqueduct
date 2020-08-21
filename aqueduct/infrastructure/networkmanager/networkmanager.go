@@ -1,8 +1,11 @@
 package networkmanager
 
 import (
+	"time"
+
 	"github.com/seashell/aqueduct/aqueduct/application"
 	"github.com/seashell/aqueduct/pkg/networkmanager"
+	system "github.com/seashell/aqueduct/pkg/system"
 )
 
 // NetworkManager is an abstraction for interacting with NetworkManager
@@ -12,14 +15,14 @@ type NetworkManager struct {
 	cache *Cache
 }
 
+// Hotspot :
 type Hotspot struct {
-	Enabled 	bool
-	SSID 		string
-	Mode		string
-	Password string
+	Enabled        bool
+	SSID           string
+	Mode           string
+	Password       string
 	GatewayAddress string
 }
-
 
 // NewNetworkManager creates a new instance of NetworkManager
 func NewNetworkManager() (*NetworkManager, error) {
@@ -31,10 +34,10 @@ func NewNetworkManager() (*NetworkManager, error) {
 
 	cache := NewCache()
 
-	return &NetworkManager{conn,cache}, nil
+	return &NetworkManager{conn, cache}, nil
 }
 
-// ListAccessPoints
+// ListAccessPoints :
 func (c *NetworkManager) ListAccessPoints() ([]application.AccessPoint, error) {
 
 	aps, err := c.conn.GetAccessPoints()
@@ -55,13 +58,27 @@ func (c *NetworkManager) ListAccessPoints() ([]application.AccessPoint, error) {
 	return items, nil
 }
 
-// AddConnection
-func (c *NetworkManager) AddConnection(conn *networkmanager.Connection) (error) {
-	return  c.conn.AddConnection(conn)
+// UpsertConnection :
+func (c *NetworkManager) UpsertConnection(conn *application.Connection) error {
+
+	err := c.conn.UpsertConnection(&networkmanager.Connection{
+		SSID:     conn.SSID,
+		Password: conn.Password,
+	})
+	if err != nil {
+		return err
+	}
+
+	go func() {
+		time.Sleep(5 * time.Second)
+		system.Reboot()
+	}()
+
+	return nil
 }
 
-// PopulateCache
-func (c *NetworkManager) PopulateCache() (error) {
+// PopulateCache :
+func (c *NetworkManager) PopulateCache() error {
 	aps, err := c.conn.GetAccessPoints()
 	if err != nil {
 		return err
@@ -80,13 +97,13 @@ func (c *NetworkManager) PopulateCache() (error) {
 	return nil
 }
 
-// StartHotspot
-func (c *NetworkManager) StartHotspot(h *Hotspot) (error) {
+// StartHotspot :
+func (c *NetworkManager) StartHotspot(h *Hotspot) error {
 	err := c.conn.StartHotspot(&networkmanager.Hotspot{
-		SSID: h.SSID,
-		Mode: h.Mode,
-		Password: h.Password,
-		GatewayAddress: h.GatewayAddress,			
+		SSID:           h.SSID,
+		Mode:           h.Mode,
+		Password:       h.Password,
+		GatewayAddress: h.GatewayAddress,
 	})
 	if err != nil {
 		return err
@@ -94,7 +111,7 @@ func (c *NetworkManager) StartHotspot(h *Hotspot) (error) {
 	return nil
 }
 
-// StartHotspot
-func (c *NetworkManager) StopHotspot(ssid string) (error) {
-	return  c.conn.StopHotspot(ssid)
+// StopHotspot :
+func (c *NetworkManager) StopHotspot(ssid string) error {
+	return c.conn.StopHotspot(ssid)
 }
