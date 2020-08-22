@@ -32,5 +32,5 @@ On supported hardware, Aqueduct will automatically bring up an access point to w
 - [x] Simple web UI for interacting with the API
 - [ ] Project website / documentation portal
 - [x] Shell access to the device via web UI
-- [ ] Containerization
+- [x] Containerization
 - [ ] Test coverage
