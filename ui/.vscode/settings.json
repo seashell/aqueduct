@@ -1,0 +1,7 @@
+{
+  "eslint.alwaysShowStatus": true,
+  "eslint.packageManager": "yarn",
+  "eslint.run": "onType",
+  "prettier.packageManager": "yarn",
+  "editor.formatOnSave": false,
+}

@@ -1,17 +1,16 @@
 
 FROM alpine:3.12 as runner
 
-RUN apk add dnsmasq
+#RUN apk add dnsmasq
 
 FROM golang:alpine as builder
 
-RUN apk add make
-
 ENV GOPATH ""
 COPY . .
-RUN go build -o wiman ./cmd/main.go && cp wiman /bin/wiman
+RUN go build -o /bin/aqueduct
 
 FROM runner
-COPY --from=builder /bin/wiman /bin/wiman
+COPY --from=builder /bin/aqueduct /bin/aqueduct
+COPY ./docker/entrypoint.sh .
 
-ENTRYPOINT ["wiman"]
+ENTRYPOINT ["./entrypoint.sh"]
