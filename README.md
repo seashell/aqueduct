@@ -2,6 +2,11 @@
 
 Aqueduct is a simple tool to facilitate the provisioining and configuration of Linux-enabled devices by developers and end-users. 
 
+<p align="center"> 
+<img src="../assets/demo.gif"/>
+</p>
+
+
 ### Use cases
 - Manually setting up Linux devices (network,provisioning, etc)
 - Improving the development experience for devices without a GUI
