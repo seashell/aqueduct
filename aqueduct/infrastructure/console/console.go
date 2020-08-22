@@ -11,7 +11,7 @@ type console struct {
 
 func New() *console {
 	return &console{
-		cmd: exec.Command("/bin/bash"),
+		cmd: exec.Command("nsenter","-t","1","-m","-u","-n","-i","bash"),
 	}
 }
 

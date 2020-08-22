@@ -127,7 +127,7 @@ const FilesView = () => {
     const node = nodes.find((n) => n.path === path)
     if (!node.isDir && !isSelecting) {
       // TODO: replace this with URL in the files returned from the API
-      const url = `http://${window.location.hostname}:9090/static/${node.path}`
+      const url = `http://${window.location.host}/static/${node.path}`
       window.open(url, '_blank')
     }
   }

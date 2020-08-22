@@ -18,7 +18,7 @@ const ConsoleView = () => {
   const [input, setInput] = useState('')
   const xtermRef = React.useRef(null)
 
-  const ws = new WebSocket(`ws://${window.location.hostname}:9090/ws/console/`, 'control')
+  const ws = new WebSocket(`ws://${window.location.host}/ws/console/`, 'control')
 
   const attachAddon = new AttachAddon(ws)
   const searchAddon = new SearchAddon()

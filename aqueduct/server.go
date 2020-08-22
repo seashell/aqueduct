@@ -132,7 +132,7 @@ func (s *Server) setupHTTPServer() error {
 // Shutdown :
 func (s *Server) Shutdown() error {
 	if s.config.Hotspot.Enabled {
-		s.nm.StopHotspot(s.config.Hotspot.SSID)
+		s.nm.StopHotspot()
 	}
 	return nil
 }

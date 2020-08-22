@@ -13,10 +13,10 @@ import (
 // and an error that will be encoded and returned to the client
 type HandlerFunc func(Response, *Request) (interface{}, error)
 
-// Middleware
+// Middleware :
 type Middleware func(HandlerFunc) HandlerFunc
 
-// HandlerAdapter
+// HandlerAdapter :
 type HandlerAdapter interface {
 	http.Handler
 }
@@ -34,12 +34,12 @@ type Response struct {
 	http.ResponseWriter
 }
 
-// BaseHandlerAdapter
+// BaseHandlerAdapter :
 type BaseHandlerAdapter struct {
 	httprouter.Router
 }
 
-// RegisterHandlerFunc
+// RegisterHandlerFunc :
 func (a *BaseHandlerAdapter) RegisterHandlerFunc(method string, path string, handler HandlerFunc, middleware ...Middleware) {
 
 	f := func(rw http.ResponseWriter, req *http.Request, ps httprouter.Params) {

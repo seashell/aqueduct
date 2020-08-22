@@ -14,22 +14,23 @@ const (
 )
 
 var (
-	// ErrMethodNotAllowed
+	// ErrMethodNotAllowed :
 	ErrMethodNotAllowed = errors.New(errMethodNotAllowed)
 
-	// ErraqueductServerError
+	// ErraqueductServerError :
 	ErraqueductServerError = errors.New(erraqueductServerError)
 
-	// ErrBadRequest
+	// ErrBadRequest :
 	ErrBadRequest = errors.New(errBadRequest)
 
-	// ErrNotAuthorized
+	// ErrNotAuthorized :
 	ErrNotAuthorized = errors.New(errNotAuthorized)
 
-	// ErrNotImplemented
+	// ErrNotImplemented :
 	ErrNotImplemented = errors.New(errNotImplemented)
 )
 
+// Error :
 type Error interface {
 	error
 	Code() int
@@ -44,7 +45,7 @@ type httpError struct {
 	message string
 }
 
-// NewHTTPError
+// NewError :
 func NewError(code int, base error, extra ...interface{}) Error {
 	return &httpError{code, fmt.Sprintf("%s %q", base.Error(), extra)}
 }

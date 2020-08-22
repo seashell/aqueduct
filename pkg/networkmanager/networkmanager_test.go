@@ -51,42 +51,49 @@ func TestStartStopHotspot(t *testing.T) {
 
 }
 
-func TestAddRemoveConnectionWithPassword(t *testing.T) {
+func TestUpsertConnection(t *testing.T) {
 	nm, err := NewNetworkManager()
 	if err != nil {
 		t.Error(err)
 	}
 
-	newConn := &Connection{
-		SSID:     "aqueduct-test-connection",
+	SSID := "aqueduct-test-connection"
+
+	newConn1 := &Connection{
+		SSID:     SSID,
 		Password: "12345678",
 	}
 
-	if err := nm.AddConnection(newConn); err != nil {
+	if err := nm.UpsertConnection(newConn1); err != nil {
 		t.Error(err)
 	}
 
-	if err := nm.RemoveConnection(newConn.SSID); err != nil {
+	newConn2 := &Connection{
+		SSID: SSID,
+	}
+
+	if err := nm.UpsertConnection(newConn2); err != nil {
 		t.Error(err)
 	}
 
-}
+	if err := nm.removeConnectionByName(newConn1.SSID); err != nil {
+		t.Error(err)
+	}
 
-func TestAddRemoveConnectionWithoutPassword(t *testing.T) {
-	nm, err := NewNetworkManager()
+	conns, err := nm.getSavedConnections()
 	if err != nil {
 		t.Error(err)
 	}
 
-	newConn := &Connection{
-		SSID: "aquedutc-test-connection",
+	for _, conn := range conns {
+		s, err := conn.GetSettings()
+		if err != nil {
+			t.Error(err)
+		}
+
+		if s["connection"]["id"] == SSID {
+			t.Error(conn)
+		}
 	}
 
-	if err := nm.AddConnection(newConn); err != nil {
-		t.Error(err)
-	}
-
-	if err := nm.RemoveConnection(newConn.SSID); err != nil {
-		t.Error(err)
-	}
 }

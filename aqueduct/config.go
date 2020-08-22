@@ -1,19 +1,20 @@
 package aqueduct
 
+// Defaults
 const (
-	DefaultHTTPPort = 9090
-	DefaultAccessPointSSID = "aqueduct-ap"
-	DefaultAccessPointPassword = ""
+	DefaultHTTPPort                  = 9090
+	DefaultAccessPointSSID           = "aqueduct-ap"
+	DefaultAccessPointPassword       = ""
 	DefaultAccessPointGatewayAddress = "192.168.42.1"
-	DefaultAccessPointMode = "ap"
-	DefaultConnectivityCheckTimeout = 30
+	DefaultAccessPointMode           = "ap"
+	DefaultConnectivityCheckTimeout  = 30
 )
 
 // Config : Aqueduct configuration
 type Config struct {
 	// UI enabled
 	UI bool
-	
+
 	// BindAddr
 	BindAddr string
 
@@ -30,15 +31,18 @@ type Config struct {
 	Hotspot *Hotspot
 }
 
+// Ports :
 type Ports struct {
 	HTTP int
 }
 
+// IsValid :
 func (c *Config) IsValid() bool {
 	// TODO
 	return true
 }
 
+// Merge :
 func (c *Ports) Merge(b *Ports) *Ports {
 	result := *c
 
@@ -49,15 +53,16 @@ func (c *Ports) Merge(b *Ports) *Ports {
 	return &result
 }
 
-
+// Hotspot :
 type Hotspot struct {
-	Enabled	bool
-	SSID		string
-	Mode		string
-	Password string
+	Enabled        bool
+	SSID           string
+	Mode           string
+	Password       string
 	GatewayAddress string
 }
 
+// Merge :
 func (c *Hotspot) Merge(b *Hotspot) *Hotspot {
 	result := *c
 
@@ -92,10 +97,10 @@ func DefaultConfig() *Config {
 			HTTP: DefaultHTTPPort,
 		},
 		Hotspot: &Hotspot{
-			Enabled: false,
-			SSID: DefaultAccessPointSSID,
-			Mode: DefaultAccessPointMode,
-			Password: DefaultAccessPointPassword,
+			Enabled:        false,
+			SSID:           DefaultAccessPointSSID,
+			Mode:           DefaultAccessPointMode,
+			Password:       DefaultAccessPointPassword,
 			GatewayAddress: DefaultAccessPointGatewayAddress,
 		},
 	}
@@ -138,7 +143,6 @@ func (c *Config) Merge(b *Config) *Config {
 	} else if b.Hotspot != nil {
 		result.Hotspot = result.Hotspot.Merge(b.Hotspot)
 	}
-
 
 	return &result
 }

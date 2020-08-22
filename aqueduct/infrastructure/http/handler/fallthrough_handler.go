@@ -6,10 +6,12 @@ import (
 	http "github.com/seashell/aqueduct/aqueduct/infrastructure/http"
 )
 
+// FallthroughHandlerAdapter :
 type FallthroughHandlerAdapter struct {
 	http.BaseHandlerAdapter
 }
 
+// NewFallthroughHandlerAdapter :
 func NewFallthroughHandlerAdapter(to string) http.HandlerAdapter {
 	a := &FallthroughHandlerAdapter{}
 

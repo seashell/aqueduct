@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-// WithCORS
+// WithCORS :
 func WithCORS(next http.HandlerFunc) http.HandlerFunc {
 	return func(rw http.ResponseWriter, req *http.Request) {
 		rw.Header().Set("Access-Control-Allow-Origin", "*")
