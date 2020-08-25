@@ -88,8 +88,9 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-import-resolver-webpack": "^0.12.2",
     "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.20.6",
     "miragejs": "^0.1.40",
-    "prettier": "^2.0.5",
+    "prettier": "^2.1.0",
     "react-app-rewire-styled-components": "^3.0.2",
     "react-app-rewired": "^2.1.3"
   },
