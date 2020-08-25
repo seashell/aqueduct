@@ -14,7 +14,7 @@ const SideNav = (props) => (
     <Box flexDirection="column" pt={3}>
       <CollapsibleSection
         headerProps={{ mx: 2, my: 2 }}
-        title={<CollapsibleSectionTitle>Development</CollapsibleSectionTitle>}
+        title={<CollapsibleSectionTitle>Setup</CollapsibleSectionTitle>}
         isOpen
       >
         {nav.options

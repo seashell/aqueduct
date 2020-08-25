@@ -42,10 +42,13 @@ const NetworksView = () => {
     return <Spinner />
   }
 
-  const networks = getNetworksQuery.data ? getNetworksQuery.data.result.items : []
+  const networks = getNetworksQuery.data.result ? getNetworksQuery.data.result.items : []
 
   const filteredNetworks =
     isLoading || networks === null ? [] : networks.filter((el) => el.ssid.includes(searchString))
+
+  const isEmpty = filteredNetworks.length === 0
+  const isError = getNetworksQuery.data.result === null
 
   return (
     <Container>
@@ -59,21 +62,27 @@ const NetworksView = () => {
           onChange={(e) => setSearchString(e.target.value)}
         />
       </Box>
-      <>
-        {filteredNetworks.map((el) => (
-          <NetworkCard
-            key={el.ssid}
-            ssid={el.ssid}
-            rssi={el.rssi}
-            security={el.security}
-            configured={el.isConfigured}
-            onClick={(ssid) => {
-              navigate(`/ui/networks/${ssid}/connect`)
-            }}
-            onForget={() => {}}
-          />
-        ))}
-      </>
+      {isError ? (
+        <ErrorState />
+      ) : isEmpty ? (
+        <EmptyState />
+      ) : (
+        <>
+          {filteredNetworks.map((el) => (
+            <NetworkCard
+              key={el.ssid}
+              ssid={el.ssid}
+              rssi={el.rssi}
+              security={el.security}
+              configured={el.isConfigured}
+              onClick={(ssid) => {
+                navigate(`/ui/networks/${ssid}/connect`)
+              }}
+              onForget={() => {}}
+            />
+          ))}
+        </>
+      )}
     </Container>
   )
 }

@@ -40,7 +40,7 @@ EmptyState.propTypes = {
 
 EmptyState.defaultProps = {
   title: 'No results found',
-  description: `Oops! It seems that you don't have any resources yet registered.`,
+  description: `Oops! It seems that there are no resources registered.`,
 }
 
 export default EmptyState

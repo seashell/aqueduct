@@ -9,6 +9,7 @@ import Box from '_components/box'
 import Text from '_components/text'
 
 import { Bars as Spinner } from '_components/spinner'
+import ErrorState from '_components/error-state'
 
 const Container = styled(Box)`
   flex-direction: column;
@@ -45,28 +46,32 @@ const SystemDetailsView = () => {
   return (
     <Container>
       <Box mb={3}>
-        <Text textStyle="title">System</Text>
+        <Text textStyle="title">System Information</Text>
       </Box>
-      <InfoTable>
-        <InfoRow>
-          <Text textStyle="strong">Hostname</Text>
-          <Text textStyle="body" ml="auto">
-            {info.hostname}
-          </Text>
-        </InfoRow>
-        <InfoRow>
-          <Text textStyle="strong">OS</Text>
-          <Text textStyle="body" ml="auto">
-            {info.os}
-          </Text>
-        </InfoRow>
-        <InfoRow>
-          <Text textStyle="strong">Aqueduct</Text>
-          <Text textStyle="body" ml="auto">
-            {info.aqueduct}
-          </Text>
-        </InfoRow>
-      </InfoTable>
+      {info ? (
+        <InfoTable>
+          <InfoRow>
+            <Text textStyle="strong">Hostname</Text>
+            <Text textStyle="body" ml="auto">
+              {info.hostname}
+            </Text>
+          </InfoRow>
+          <InfoRow>
+            <Text textStyle="strong">OS</Text>
+            <Text textStyle="body" ml="auto">
+              {info.os}
+            </Text>
+          </InfoRow>
+          <InfoRow>
+            <Text textStyle="strong">Aqueduct</Text>
+            <Text textStyle="body" ml="auto">
+              {info.aqueduct}
+            </Text>
+          </InfoRow>
+        </InfoTable>
+      ) : (
+        <ErrorState />
+      )}
     </Container>
   )
 }

@@ -7,7 +7,7 @@ const Button = styled.button`
   font-weight: bold;
   letter-spacing: 0.04em;
   border: none;
-  
+
   padding: 2px 16px;
 
   :disabled {

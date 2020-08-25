@@ -3,7 +3,7 @@ import { grid, space, color, layout, flexbox, border, shadow, borderStyle } from
 import { containers } from '../../styles'
 
 const Box = styled.div`
-box-sizing: border-box;
+  box-sizing: border-box;
   ${grid}
   ${space}
   ${color}

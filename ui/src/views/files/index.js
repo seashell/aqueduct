@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone'
 import { Portal } from 'react-portal'
 import * as _ from 'lodash'
 
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
 import { GET_FILES, UPLOAD_FILE, DELETE_FILE } from '_graphql/actions/files'
 import { useLocation } from '@reach/router'
 
@@ -16,9 +16,11 @@ import Box from '_components/box'
 import Text from '_components/text'
 import Icon from '_components/icon'
 import Button from '_components/button'
+import EmptyState from '_components/empty-state'
 import SearchInput from '_components/inputs/search-input'
 import { Bars as Spinner } from '_components/spinner'
 
+import ErrorState from '_components/error-state'
 import Tree from './tree'
 
 const Container = styled(Box)`
@@ -71,7 +73,7 @@ const FilesView = () => {
   const getFilesQuery = useQuery(GET_FILES, {
     variables: {},
     onCompleted: (data) => {
-      setNodes(data.result.items)
+      setNodes(data.result ? data.result.items : [])
     },
   })
 
@@ -108,7 +110,7 @@ const FilesView = () => {
 
   useEffect(() => {
     getFilesQuery.refetch().then((res) => {
-      setNodes(res.data.result.items)
+      setNodes(res.data.result ? res.data.result.items : [])
     })
   }, [location])
 
@@ -156,7 +158,7 @@ const FilesView = () => {
     }
   }
 
-  const handlDeleteFilesButtonClick = () => {
+  const handleDeleteFilesButtonClick = () => {
     nodes.forEach((node) => {
       if (node.isSelected) {
         deleteFile({ variables: { path: node.path } }).then(() => {
@@ -177,6 +179,9 @@ const FilesView = () => {
     return <Spinner />
   }
 
+  const isEmpty = nodes.length === 0
+  const isError = getFilesQuery.data.result === null
+
   const filteredNodes = nodes
     .sort((el) => (el.isDir ? -1 : 1))
     .filter((el) => el.path.includes(searchString))
@@ -185,11 +190,13 @@ const FilesView = () => {
 
   return (
     <Container>
-      <Portal>
-        <Box style={{ width: 'max-content', position: 'absolute', right: '32px', bottom: '32px' }}>
-          <UploadButton onClick={handleUploadButtonClick} position="absolute" />
-        </Box>
-      </Portal>
+      {!isError && (
+        <Portal>
+          <Box style={{ width: 'max-content', position: 'fixed', right: '32px', bottom: '32px' }}>
+            <UploadButton onClick={handleUploadButtonClick} />
+          </Box>
+        </Portal>
+      )}
       <Box mb={3}>
         <Text textStyle="title">Files</Text>
       </Box>
@@ -214,7 +221,7 @@ const FilesView = () => {
             height="42px"
             width="120px"
             ml={2}
-            onClick={handlDeleteFilesButtonClick}
+            onClick={handleDeleteFilesButtonClick}
           >
             Delete
           </Button>
@@ -227,13 +234,19 @@ const FilesView = () => {
         height="60vh"
       >
         <input {...getInputProps()} />
-        <Tree
-          nodes={tree}
-          isSelecting={isSelecting}
-          onNodeClick={handleTreeNodeClick}
-          onNodeSelect={handleTreeNodeSelect}
-          onNodeDeselect={handleTreeNodeDeselect}
-        />
+        {isError ? (
+          <ErrorState />
+        ) : isEmpty ? (
+          <EmptyState />
+        ) : (
+          <Tree
+            nodes={tree}
+            isSelecting={isSelecting}
+            onNodeClick={handleTreeNodeClick}
+            onNodeSelect={handleTreeNodeSelect}
+            onNodeDeselect={handleTreeNodeDeselect}
+          />
+        )}
       </Box>
     </Container>
   )
