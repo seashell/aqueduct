@@ -16,38 +16,38 @@ import nav from '_containers/nav'
 import Brand from './brand'
 
 export const Container = styled.div`
-height: 72px;
-position: fixed;
-box-sizing: border-box;
-border-bottom: 1px solid ${(props) => props.theme.colors.neutralLighter};
-
-top: 0;
-right: 0;
-left: 0;
-
-z-index: 99;
-
-display: flex;
-justify-content: space-between;
-
-.nav-default {
-  display: none;
-}
-
-// Laptops and above
-@media (min-width: 1280px) {
-  display: grid;
   height: 72px;
-  grid-template-columns: 1fr auto 1fr auto 1fr;
-  grid-template-areas: '. brand . nav .';
-  .nav-mobile {
+  position: fixed;
+  box-sizing: border-box;
+  border-bottom: 1px solid ${(props) => props.theme.colors.neutralLighter};
+
+  top: 0;
+  right: 0;
+  left: 0;
+
+  z-index: 99;
+
+  display: flex;
+  justify-content: space-between;
+
+  .nav-default {
     display: none;
   }
-  .nav-default {
-    display: flex;
+
+  // Laptops and above
+  @media (min-width: 1280px) {
+    display: grid;
+    height: 72px;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    grid-template-areas: '. brand . nav .';
+    .nav-mobile {
+      display: none;
+    }
+    .nav-default {
+      display: flex;
+    }
   }
-}
-  
+
   ${border}
   ${shadow}
   ${color}

@@ -19,7 +19,7 @@ export const GET_FILES = gql`
 export const UPLOAD_FILE = gql`
   mutation uploadFile($input: File!) {
     uploadFile(input: $input)
-      @rest(type: "File", path: "filesystem/", method: "POST", bodySerializer: "fileEncode") {
+    @rest(type: "File", path: "filesystem/", method: "POST", bodySerializer: "fileEncode") {
       error
     }
   }

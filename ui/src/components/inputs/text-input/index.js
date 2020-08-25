@@ -15,7 +15,7 @@ const TextInput = styled.input`
     border: 1px solid ${(props) => props.theme.colors.primary};
   }
   :disabled {
-    background: rgb(242,242,242);
+    background: rgb(242, 242, 242);
     cursor: not-allowed;
   }
   :invalid {
