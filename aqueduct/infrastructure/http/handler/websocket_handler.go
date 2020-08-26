@@ -55,7 +55,7 @@ func (a *ConsoleHandlerAdapter) handleHTTP(rw stdhttp.ResponseWriter, req *stdht
 
 func (a *ConsoleHandlerAdapter) handleWS(conn *websocket.Conn) {
 
-	cmd := exec.Command("nsenter", "-t", "1", "-m", "-u", "-n", "-i", "bash")
+	cmd := exec.Command("/bin/sh")
 
 	f, err := pty.Start(cmd)
 	if err != nil {

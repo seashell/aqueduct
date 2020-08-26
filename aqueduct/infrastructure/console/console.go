@@ -5,17 +5,20 @@ import (
 	"os/exec"
 )
 
-type console struct {
+// Console :
+type Console struct {
 	cmd *exec.Cmd
 }
 
-func New() *console {
-	return &console{
-		cmd: exec.Command("nsenter","-t","1","-m","-u","-n","-i","bash"),
+// New :
+func New() *Console {
+	return &Console{
+		cmd: exec.Command("/bin/sh"),
 	}
 }
 
-func (c *console) Open() (io.Writer, io.Reader, error) {
+// Open :
+func (c *Console) Open() (io.Writer, io.Reader, error) {
 
 	stdin, _ := c.cmd.StdinPipe()
 	stdout, _ := c.cmd.StdoutPipe()
@@ -29,6 +32,7 @@ func (c *console) Open() (io.Writer, io.Reader, error) {
 	return stdin, stdout, nil
 }
 
-func (c *console) Close() error {
+// Close :
+func (c *Console) Close() error {
 	return c.Close()
 }
